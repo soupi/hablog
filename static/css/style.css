@@ -1,0 +1,237 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600,600italic,700,700italic);
+
+html, body { height:98%; }
+body {
+	line-height: 1.4;
+	background:	repeat-x fixed 0% 0% #2F3233;
+	overflow-y:scroll;
+	font-family: 'Open Sans', Helvetica, tahoma, arial, sans-serif;
+  font-weight: 300;
+}
+.logo a, .logo h1 {
+  margin-left: 20px;
+  font-size: 36px;
+  margin-bottom: 0px;
+  font-weight: 300;
+}
+
+h2 {
+  font-weight: 300;
+  color: #A5FF61;
+  margin-bottom: 0;
+}
+h3 { font-size: 32; }
+h3, h4, h5, p, input, ul, li, .nav a
+{
+
+	font-family: 'Open Sans', Helvetica, arial, sans-serif;
+  font-weight: 300;
+}
+p, a {
+  font-weight: 400;
+}
+input
+{
+  color: black;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 980px;
+  min-width: 500px;
+  margin: auto;
+  //box-shadow: 2px 2px 10px #225;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  clear: both;
+  height: 100%;
+}
+
+.maincontainer
+{
+  max-width: 980px;
+  min-width: 500px;
+	background: #272727;
+	margin: 15px auto;
+	padding: 10px;
+	overflow:hidden;
+	margin-bottom:10px;
+  color: white;
+  min-height: 450px;
+}
+
+.header {
+	color: white;
+	margin: auto;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+
+.logo {
+  text-decoration: none;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.nav { width: 430px; margin: auto; text-align: center; }
+
+.nav li
+{
+  font-size: 14px;
+  display: inline-block;
+  margin: 5px;
+  color: #888;
+}
+
+ul {	list-style: none; }
+
+.nav a
+{
+  font-size:20px;
+}
+
+a:visited {
+	color: #79BAF2;
+}
+
+a {
+	color: #79BAF2;
+	text-decoration: none;
+	font-weight: regular;
+
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+.current a {
+    color: white;
+}
+a:hover {
+	color: white;
+}
+
+.rounded-corners, .sidebar, .header, .container, .maincontainer, .content article {
+     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.content {
+	padding-right: 30px;
+	padding-left: 10px;
+	padding-top: 20px;
+	overflow: hidden;
+}
+
+.content p {
+	text-align: justify;
+	margin-top: 0px;
+	margin-left: 10px;
+}
+
+label {
+  margin-bottom: 2px;
+}
+
+.formdiv label
+{
+	display: block;
+	width: 200px;
+  margin-bottom: 5px;
+  font-size: 18px;
+	/* text-align: right; */
+}
+.formdiv input[type='text']
+{
+	width: 90%;
+  margin-right: 5px;
+	//margin: auto;
+}
+.formdiv
+{
+  margin-bottom: 30px;
+}
+.addformdiv label
+{
+  display:block;
+	width: 200px;
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+.addformdiv input[type='text'], input[type="url"]
+{
+  width: 50%;
+	//margin: auto;
+}
+.addformdiv
+{
+  margin-bottom: 30px;
+}
+
+
+
+hr {
+  border-color: #FFF;
+}
+
+table {
+  border: 1px solid #666;
+  text-align: center;
+}
+
+#animelist li {
+  display: inline-block;
+  margin-right: 15px;
+}
+#animelist img {
+  width: 200px;
+  height: 200px;
+}
+
+#bgimg
+{
+  float: right;
+  z-index; -1;
+}
+
+.post { margin: 20px; }
+.Authornm { color: #79BAF2; }
+.postAuthor
+{
+  margin-right: 20px;
+  float: left;
+}
+.postAuthor img
+{
+  width: 50px;
+  display: block;
+}
+.postSubTitle
+{
+  display: block;
+  margin-bottom: 20px;
+}
+.postDate
+{
+  font-size: 12px;
+}
+.postTags li
+{
+  list-style-type: none;
+  display: inline;
+  font-size: 12px;
+}
+.postAuthor { display: block; }
+.postContent { margin-left: 70px; }
+.post
+{
+  border-bottom: 1px ridge #664;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+.post:nth-last-child(2) { border-bottom: 0px; }
+.seperator { font-size: 12px; }
