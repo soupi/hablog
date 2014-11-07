@@ -20,7 +20,8 @@ Executable hablog
     blaze-html,
     text,
     transformers,
-    markdown
+    markdown,
+    directory
 
 
   if impl(ghc >= 6.12.0)

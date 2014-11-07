@@ -15,10 +15,15 @@ import qualified Text.Blaze.Html5.Attributes as A
 import           Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html.Renderer.Text as HR
 
+import qualified System.Directory as DIR (getDirectoryContents)
+
 import Html
+import Model
 
 presentMain :: ActionM ()
-presentMain = html "main"
+presentMain = do
+  posts <- lift $ liftM (drop 2) (DIR.getDirectoryContents "_posts")
+  html $ HR.renderHtml $ template "Hablog" $ postsList (map toPost $ reverse posts)
 
 presentPosts :: T.Text -> T.Text -> ActionM ()
 presentPosts search query = html $ mconcat ["posts with: ", search, " and ", query]

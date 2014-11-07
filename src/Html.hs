@@ -3,12 +3,14 @@
 module Html where
 
 import Data.Foldable (foldMap)
-import Control.Monad ()
+import Data.Monoid (mconcat)
 import Data.String (fromString)
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
+
+import Model
 
 template :: T.Text -> H.Html -> H.Html
 template title container =
@@ -45,3 +47,9 @@ errorPage msg =
 emptyPage :: H.Html
 emptyPage = H.span " "
 
+postsList :: [Post] -> H.Html
+postsList = H.ul . mconcat . fmap postsListItem
+
+postsListItem :: Post -> H.Html
+postsListItem post = do
+  H.li $ H.a ! A.href (fromString (show post)) $ H.toHtml $ title post
