@@ -13,7 +13,7 @@ module Main where
 import Data.List (concatMap, toUpper)
 
 main :: IO ()
-main = concatMap toUpper ["Hello", "World"]
+main = putStrLn $ concatMap toUpper ["Hello", "World"]
 
 ```
 

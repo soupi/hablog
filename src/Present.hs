@@ -11,6 +11,9 @@ import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as TIO
 
 import qualified Text.Blaze.Html.Renderer.Text as HR
+import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5.Attributes as A
+import           Text.Blaze.Html5 ((!))
 
 import qualified System.Directory as DIR (getDirectoryContents)
 
@@ -20,7 +23,17 @@ import Model
 presentMain :: ActionM ()
 presentMain = do
   allPosts <- lift getAllPosts
-  html $ HR.renderHtml $ template "Hablog" $ postsList allPosts
+  tgs <- lift getTagList
+  auths <- lift getAuthorsList
+  html $ HR.renderHtml $ template "Hablog" $ do
+  H.aside ! A.class_ "aside" $ do
+    H.div ! A.class_ "AllAuthorsList" $ do
+      H.h1 "Authors"
+      auths
+    H.div ! A.class_ "AllTagsList" $ do
+      H.h1 "Tags"
+      tgs
+  postsListHtml allPosts
 
 getAllPosts :: IO [Post]
 getAllPosts = do
@@ -37,16 +50,22 @@ presentPost date title = do
   html $ HR.renderHtml $ postPage myPost
 
 presentTags :: ActionM ()
-presentTags = html . HR.renderHtml . template "Posts Tags" . tagsList . getAllTags =<< lift getAllPosts
+presentTags = html . HR.renderHtml . template "Posts Tags" =<< lift getTagList
+
+getTagList :: IO H.Html
+getTagList = return . tagsList . getAllTags =<< getAllPosts
+
+getAuthorsList :: IO H.Html
+getAuthorsList = return . authorsList . getAllAuthors =<< getAllPosts
 
 presentTag :: String -> ActionM ()
-presentTag tag = html . HR.renderHtml . template (T.pack tag) . postsList . filter (hasTag tag) =<< lift getAllPosts
+presentTag tag = html . HR.renderHtml . template (T.pack tag) . postsListHtml . filter (hasTag tag) =<< lift getAllPosts
 
 presentAuthors :: ActionM ()
-presentAuthors = html . HR.renderHtml . template "Posts Authors" . authorsList . getAllAuthors =<< lift getAllPosts
+presentAuthors = html . HR.renderHtml . template "Posts Authors" =<< lift getAuthorsList
 
 presentAuthor :: String -> ActionM ()
-presentAuthor auth = html . HR.renderHtml . template (T.pack auth) . postsList . filter (hasAuthor auth) =<< lift getAllPosts
+presentAuthor auth = html . HR.renderHtml . template (T.pack auth) . postsListHtml . filter (hasAuthor auth) =<< lift getAllPosts
 
 getPostFromFile :: T.Text -> T.Text -> IO Post
 getPostFromFile date title = do

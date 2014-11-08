@@ -47,11 +47,21 @@ errorPage msg =
 emptyPage :: H.Html
 emptyPage = H.span " "
 
+
+postsListHtml :: [Post.Post] -> H.Html
+postsListHtml posts =
+   H.div ! A.class_ "PostsList" $ do 
+    H.h1 "Posts"
+    postsList posts
+
 postsList :: [Post.Post] -> H.Html
 postsList = H.ul . mconcat . fmap postsListItem
 
 postsListItem :: Post.Post -> H.Html
-postsListItem post = H.li $ H.a ! A.href (fromString ("/" ++ Post.getPath post)) $ H.toHtml $ Post.headerTitle post
+postsListItem post = H.li $ do
+  H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
+  H.span ! A.class_ "seperator" $ " - "
+  H.a ! A.href (fromString ("/" ++ Post.getPath post)) $ H.toHtml $ Post.headerTitle post
 
 postPage :: Post.Post -> H.Html
 postPage post = template (T.pack (Post.headerTitle post)) $ do

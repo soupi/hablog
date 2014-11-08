@@ -54,7 +54,7 @@ input
   min-width: 500px;
 	background: #272727;
 	margin: 15px auto;
-	padding: 10px;
+	padding: 20px;
 	overflow:hidden;
 	margin-bottom:10px;
   color: white;
@@ -234,3 +234,6 @@ table {
 }
 .post:nth-last-child(2) { border-bottom: 0px; }
 .seperator { font-size: 16px; color: #A5FF61; }
+.aside { float:right; margin-right: 40px; }
+.PostsList { margin-left: 20px; }
+ul { padding-left: 0; }
