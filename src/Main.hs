@@ -30,6 +30,11 @@ router = do
     if hasdots path then
       fail "no dots in path allowed"
       else file path
+  get "/tags"
+    presentTags
+  get "/tags/:tag" $ do
+    tag <- param "tag"
+    presentTag tag
 
 hasdots :: String -> Bool
 hasdots [] = False

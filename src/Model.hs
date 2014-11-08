@@ -1,16 +1,43 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Model (toPost,year,month,day,title, Post) where
+module Model where 
 
-data Post = Post { year :: String, month :: String, day :: String, title :: String } deriving (Eq)
+import         Data.Maybe (fromMaybe)
+import         Data.Char (toLower)
+import qualified Data.Text.Lazy as T (Text, unpack, lines, unlines)
+import qualified Text.Markdown as MD
+import qualified Text.Blaze.Html5 as H
 
-toPost :: String -> Post
-toPost txt = Post yyyy mm dd ttl
-  where as_list = splitBy '-' txt
-        yyyy   = as_list !! 0
-        mm     = as_list !! 1
-        dd     = as_list !! 2
-        ttl    = reverse $ drop 3 $ reverse $ convert ' ' $ drop 3 as_list
+data Post = Post { year :: String
+                 , month :: String
+                 , day :: String
+                 , pathTitle :: String
+                 , headerTitle :: String
+                 , author :: String
+                 , tags :: [String]
+                 , content :: H.Html }
+
+toPost :: String -> T.Text -> Post
+toPost path fileContent = Post yyyy mm dd pttl httl auth tgs $ MD.markdown MD.def $ T.unlines $ dropWhile (/="") $ T.lines fileContent
+  where as_list = splitBy '-' path
+        yyyy    = as_list !! 0
+        mm      = as_list !! 1
+        dd      = as_list !! 2
+        pttl    = reverse $ drop 3 $ reverse $ convert ' ' $ drop 3 as_list
+        header  = takeWhile (/=[]) $ (lines . T.unpack) fileContent
+        getHd p = takeJust $ map ((\x -> if hd x == Just p then Just (unwords (tail x)) else Nothing) . words) header
+        httl    = fromMaybe "" $ getHd "title:"
+        auth    = fromMaybe "" $ getHd "title:"
+        tgs     = map removeWhitespaces $ splitBy ',' $ map toLower $ fromMaybe "" $ getHd "tags:"
+
+hd :: [a] -> Maybe a
+hd [] = Nothing
+hd (x:_) = Just x
+
+takeJust :: [Maybe a] -> Maybe a
+takeJust [] = Nothing
+takeJust (Just x:_) = Just x
+takeJust (Nothing:xs) = takeJust xs
 
 convert :: Char -> [String] -> String
 convert c str = concatMap (++[c]) (init str) ++ last str
@@ -23,4 +50,11 @@ splitBy c txt = map reverse $ go [] txt
           | otherwise = go (y:xs) ys
 
 instance Show Post where
-  show post = concat ["post/", year post, "/", month post, "/", day post, "/", (convert '-' . splitBy ' ' . title) post]
+  show post = concat ["post/", year post, "/", month post, "/", day post, "/", (convert '-' . splitBy ' ' . pathTitle) post]
+
+getPath :: Post -> String
+getPath post = concat ["post/", year post, "/", month post, "/", day post, "/", (convert '-' . splitBy ' ' . pathTitle) post]
+
+removeWhitespaces :: String -> String
+removeWhitespaces = unwords . words
+
