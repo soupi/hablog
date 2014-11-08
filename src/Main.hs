@@ -10,7 +10,7 @@ import qualified Data.Text.Lazy as T
 import Present
 
 main :: IO ()
-main = scotty 4000 router
+main = scotty 8000 router
 
 router :: ScottyM ()
 router = do

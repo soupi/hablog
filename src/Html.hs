@@ -17,10 +17,13 @@ template title container =
     H.head $ do
       H.title (H.toHtml title)
       H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/css/style.css"
+      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/highlight/styles/obsidian.css"
     H.body $ do
       H.div ! A.class_ "container" $ do
         logo
         H.div ! A.class_ "maincontainer" $ container
+      H.script ! A.src "static/highlight/highlight.pack.js" $ ""
+      H.script "hljs.initHighlightingOnLoad();"
 
 
 mainTemplate :: H.Html -> H.Html

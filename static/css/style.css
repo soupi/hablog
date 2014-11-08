@@ -225,7 +225,7 @@ table {
   font-size: 12px;
   margin-right: 8px;
 }
-.postContent { margin-left: 70px; }
+.postContent { margin-left: 70px; margin-right: 70px; }
 .post
 {
   border-bottom: 1px ridge #664;
