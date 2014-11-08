@@ -56,9 +56,10 @@ postPage post = template (T.pack (Post.headerTitle post)) $ do
       H.div ! A.class_ "postTitle" $ do
         H.a ! A.href (fromString (Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.headerTitle post)
         H.span ! A.class_ "postSubTitle" $ do
+          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList [Post.author post]
+          H.span ! A.class_ "seperator" $ " - "
           H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
           H.span ! A.class_ "seperator" $ " - "
-          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList [Post.author post]
           H.span ! A.class_ "postTags" $ tagsList (Post.tags post)
           
       H.div ! A.class_ "postContent" $ Post.content post

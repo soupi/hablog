@@ -27,7 +27,7 @@ h3, h4, h5, p, input, ul, li, .nav a
 	font-family: 'Open Sans', Helvetica, arial, sans-serif;
   font-weight: 300;
 }
-p, a {
+a {
   font-weight: 400;
 }
 input
@@ -202,9 +202,8 @@ table {
 .Authornm { color: #79BAF2; }
 .postAuthor
 {
-  margin-right: 20px;
-  float: left;
 }
+.postTitle ul, .postTitle li { padding: 0; display: inline; }
 .postAuthor img
 {
   width: 50px;
@@ -224,8 +223,8 @@ table {
   list-style-type: none;
   display: inline;
   font-size: 12px;
+  margin-right: 8px;
 }
-.postAuthor { display: block; }
 .postContent { margin-left: 70px; }
 .post
 {
@@ -234,4 +233,4 @@ table {
   margin-bottom: 30px;
 }
 .post:nth-last-child(2) { border-bottom: 0px; }
-.seperator { font-size: 12px; }
+.seperator { font-size: 16px; color: #A5FF61; }
