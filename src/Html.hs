@@ -59,4 +59,11 @@ tagsList = H.ul . mconcat . fmap tagsListItem
 tagsListItem :: String -> H.Html
 tagsListItem tag = H.li $ H.a ! A.href (fromString tag) $ H.toHtml tag
 
+authorsList :: [String] -> H.Html
+authorsList = H.ul . mconcat . fmap authorsListItem
+
+authorsListItem :: String -> H.Html
+authorsListItem author = H.li $ H.a ! A.href (fromString ("/authors/" ++ author)) $ H.toHtml author
+
+
 

@@ -10,7 +10,7 @@ import qualified Data.Text.Lazy as T
 import Present
 
 main :: IO ()
-main = scotty 3000 router
+main = scotty 4000 router
 
 router :: ScottyM ()
 router = do
@@ -35,6 +35,11 @@ router = do
   get "/tags/:tag" $ do
     tag <- param "tag"
     presentTag tag
+  get "/authors"
+    presentAuthors
+  get "/authors/:author" $ do
+    author <- param "author"
+    presentAuthor author
 
 hasdots :: String -> Bool
 hasdots [] = False

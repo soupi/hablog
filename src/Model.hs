@@ -27,7 +27,7 @@ toPost path fileContent = Post yyyy mm dd pttl httl auth tgs $ MD.markdown MD.de
         header  = takeWhile (/=[]) $ (lines . T.unpack) fileContent
         getHd p = takeJust $ map ((\x -> if hd x == Just p then Just (unwords (tail x)) else Nothing) . words) header
         httl    = fromMaybe "" $ getHd "title:"
-        auth    = fromMaybe "" $ getHd "title:"
+        auth    = fromMaybe "" $ getHd "author:"
         tgs     = map removeWhitespaces $ splitBy ',' $ map toLower $ fromMaybe "" $ getHd "tags:"
 
 hd :: [a] -> Maybe a
