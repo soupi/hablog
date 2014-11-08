@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Model where 
+module Model where
 
 import         Data.Maybe (fromMaybe)
 import         Data.Char (toLower)
-import qualified Data.Text.Lazy as T (Text, unpack, lines, unlines)
+import qualified Data.Text.Lazy as T (Text, pack, unpack, lines, unlines, concat)
 import qualified Text.Markdown as MD
 import qualified Text.Blaze.Html5 as H
 
@@ -20,7 +20,7 @@ data Post = Post { year :: String
 toPost :: String -> T.Text -> Post
 toPost path fileContent = Post yyyy mm dd pttl httl auth tgs $ MD.markdown MD.def $ T.unlines $ dropWhile (/="") $ T.lines fileContent
   where as_list = splitBy '-' path
-        yyyy    = as_list !! 0
+        yyyy    = if length x > 1 then x !! 1 else head x where x = splitBy '/' $ head as_list 
         mm      = as_list !! 1
         dd      = as_list !! 2
         pttl    = reverse $ drop 3 $ reverse $ convert ' ' $ drop 3 as_list
@@ -58,3 +58,5 @@ getPath post = concat ["post/", year post, "/", month post, "/", day post, "/", 
 removeWhitespaces :: String -> String
 removeWhitespaces = unwords . words
 
+date :: Post -> T.Text
+date post = T.concat $ map T.pack [day post, "/", month post, "/", year post]
