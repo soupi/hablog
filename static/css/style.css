@@ -237,3 +237,36 @@ table {
 .aside { float:right; margin-right: 40px; }
 .PostsList { margin-left: 20px; }
 ul { padding-left: 0; }
+
+.postHeader { font-size: 27px; }
+.postContent h1 { font-size: 26px; }
+.postContent h2 { font-size: 24px; }
+.postContent h3 { font-size: 22px; }
+.postContent h4 { font-size: 20px; }
+.postContent h5 { font-size: 18px; }
+.postContent h6 { font-size: 16px; }
+
+.postContent h1, .postContent h2, .postContent h3, .postContent h4, .postContent h5, .postContent h6
+{
+  color: #fff;
+  font-weight: 300;
+}
+.postContent
+{
+  font-family: 'Lucida Sans Unicode', helvetica, arial, sans-serif;
+  font-weight: normal;
+  color: #ddd;
+}
+.postContent p, .postContent li
+{
+  font-size: 16px;
+  color: #ddd;
+
+}
+
+.postContent img
+{
+  display: block;
+  margin: auto;
+}
+
