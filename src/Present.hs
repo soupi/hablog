@@ -18,7 +18,7 @@ import           Text.Blaze.Html5 ((!))
 import qualified System.Directory as DIR (getDirectoryContents)
 
 import Html
-import Model
+import qualified Model as Post
 
 presentMain :: ActionM ()
 presentMain = do
@@ -35,11 +35,11 @@ presentMain = do
       tgs
   postsListHtml allPosts
 
-getAllPosts :: IO [Post]
+getAllPosts :: IO [Post.Post]
 getAllPosts = do
   posts <- liftM (drop 2) (DIR.getDirectoryContents "_posts")
   contents <- mapM (TIO.readFile . ("_posts/"++)) posts
-  return $ map (uncurry toPost) $ reverse (zip posts contents)
+  return $ map (uncurry Post.toPost) $ reverse (zip posts contents)
 
 presentPosts :: T.Text -> T.Text -> ActionM ()
 presentPosts search query = html $ mconcat ["posts with: ", search, " and ", query]
@@ -67,21 +67,21 @@ presentAuthors = html . HR.renderHtml . template "Posts Authors" =<< lift getAut
 presentAuthor :: String -> ActionM ()
 presentAuthor auth = html . HR.renderHtml . template (T.pack auth) . postsListHtml . filter (hasAuthor auth) =<< lift getAllPosts
 
-getPostFromFile :: T.Text -> T.Text -> IO Post
+getPostFromFile :: T.Text -> T.Text -> IO Post.Post
 getPostFromFile date title = do
   let postPath = T.unpack $ mconcat ["_posts/", date, "-", title, ".md"]
   fileContent <- TIO.readFile postPath
-  let myPost = toPost postPath fileContent
+  let myPost = Post.toPost postPath fileContent
   return myPost
 
-getAllTags :: [Post] -> [String]
-getAllTags = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap tags
+getAllTags :: [Post.Post] -> [String]
+getAllTags = L.sort . map (Post.removeWhitespaces . head) . L.group . L.sort . concatMap Post.tags
 
-hasTag :: String -> Post -> Bool
-hasTag tag = ([]/=) . filter (==tag) . tags
+hasTag :: String -> Post.Post -> Bool
+hasTag tag = ([]/=) . filter (==tag) . Post.tags
 
-getAllAuthors :: [Post] -> [String]
-getAllAuthors = L.sort . map (removeWhitespaces . head) . L.group . L.sort . map author
+getAllAuthors :: [Post.Post] -> [String]
+getAllAuthors = L.sort . map (Post.removeWhitespaces . head) . L.group . L.sort . map Post.author
 
-hasAuthor :: String -> Post -> Bool
-hasAuthor auth myPost = auth == author myPost
+hasAuthor :: String -> Post.Post -> Bool
+hasAuthor auth myPost = auth == Post.author myPost
