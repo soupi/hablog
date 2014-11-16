@@ -9,6 +9,7 @@ import qualified Text.Blaze.Html5 as H
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
 
+
 import qualified Model as Post
 
 template :: T.Text -> H.Html -> H.Html
@@ -67,7 +68,7 @@ postPage :: Post.Post -> H.Html
 postPage post = template (T.pack (Post.headerTitle post)) $ do
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
-        H.a ! A.href (fromString (Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.headerTitle post)
+        H.a ! A.href (fromString ("/" + Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.headerTitle post)
         H.span ! A.class_ "postSubTitle" $ do
           H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList [Post.author post]
           H.span ! A.class_ "seperator" $ " - "

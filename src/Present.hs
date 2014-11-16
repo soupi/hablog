@@ -37,7 +37,7 @@ presentMain = do
 
 getAllPosts :: IO [Post.Post]
 getAllPosts = do
-  posts <- liftM (drop 2) (DIR.getDirectoryContents "_posts")
+  posts <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents "_posts")
   contents <- mapM (TIO.readFile . ("_posts/"++)) posts
   return $ map (uncurry Post.toPost) $ reverse (zip posts contents)
 
