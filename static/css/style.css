@@ -200,10 +200,19 @@ table {
 
 .post { margin: 20px; }
 .Authornm { color: #79BAF2; }
-.postAuthor
-{
-}
 .postTitle ul, .postTitle li { padding: 0; display: inline; }
+.postAuthor li
+{
+  margin-right: 8px;
+  border-right: #444 solid 1px;
+  padding-right: 8px;
+}
+.postAuthor li:last-child
+{
+  border: 0px;
+  padding-right: 0px;
+  margin-right: 4px;
+}
 .postAuthor img
 {
   width: 50px;

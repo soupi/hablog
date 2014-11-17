@@ -39,10 +39,7 @@ getAllPosts :: IO [Post.Post]
 getAllPosts = do
   posts <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents "_posts")
   contents <- mapM (TIO.readFile . ("_posts/"++)) posts
-  return $ map (uncurry Post.toPost) $ reverse (zip posts contents)
-
-presentPosts :: T.Text -> T.Text -> ActionM ()
-presentPosts search query = html $ mconcat ["posts with: ", search, " and ", query]
+  return $ reverse $ L.sort $ map (uncurry Post.toPost) $ reverse (zip posts contents)
 
 presentPost :: T.Text -> T.Text -> ActionM ()
 presentPost date title = do
@@ -81,7 +78,7 @@ hasTag :: String -> Post.Post -> Bool
 hasTag tag = ([]/=) . filter (==tag) . Post.tags
 
 getAllAuthors :: [Post.Post] -> [String]
-getAllAuthors = L.sort . map (Post.removeWhitespaces . head) . L.group . L.sort . map Post.author
+getAllAuthors = L.sort . map (Post.removeWhitespaces . head) . L.group . L.sort . concatMap Post.authors
 
 hasAuthor :: String -> Post.Post -> Bool
-hasAuthor auth myPost = auth == Post.author myPost
+hasAuthor auth myPost = auth `elem` Post.authors myPost

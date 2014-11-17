@@ -15,10 +15,6 @@ main = scotty 8080 router
 router :: ScottyM ()
 router = do
   get "/" presentMain
-  get "/posts/:search/:query" $ do
-    search <- param "search"
-    query <- param "query"
-    presentPosts search query
   get "/post/:yyyy/:mm/:dd/:title" $ do
     yyyy <- param "yyyy"
     mm <- param "mm"

@@ -1,5 +1,5 @@
 title: My Take on Functional Programming
-author: Gil
+authors: Gil
 tags: functional programming, code, haskell, scheme
 
 Hello everybody, this is my first time posting this blog. I've tried to think about what to write about on this new blog and in the end decided to go with something I like to talk about - functional programming. I hope you'll enjoy this blog and this post.

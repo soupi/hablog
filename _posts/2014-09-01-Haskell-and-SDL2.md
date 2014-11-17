@@ -1,5 +1,5 @@
 title: Getting started with SDL2 in Haskell on Mac OS X
-author: Gil
+authors: Gil
 tags: haskell, sdl2, graphics, game development, OS X
 
 ## Installation:

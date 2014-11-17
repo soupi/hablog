@@ -1,5 +1,5 @@
 title: Haskell syntax highlight test
-author: Gil
+authors: Gil
 tags: markdown, syntax, haskell, programming
 
 Lets write some Haskell code

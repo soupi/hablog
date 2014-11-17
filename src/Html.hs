@@ -4,6 +4,7 @@ module Html where
 
 import Data.Monoid (mconcat)
 import Data.String (fromString)
+import Data.List (sort)
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import Text.Blaze.Html5 ((!))
@@ -68,9 +69,9 @@ postPage :: Post.Post -> H.Html
 postPage post = template (T.pack (Post.headerTitle post)) $ do
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
-        H.a ! A.href (fromString ("/" + Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.headerTitle post)
+        H.a ! A.href (fromString ("/" ++ Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.headerTitle post)
         H.span ! A.class_ "postSubTitle" $ do
-          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList [Post.author post]
+          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList $ Post.authors post
           H.span ! A.class_ "seperator" $ " - "
           H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
           H.span ! A.class_ "seperator" $ " - "
@@ -79,13 +80,13 @@ postPage post = template (T.pack (Post.headerTitle post)) $ do
       H.div ! A.class_ "postContent" $ Post.content post
 
 tagsList :: [String] -> H.Html
-tagsList = H.ul . mconcat . fmap tagsListItem
+tagsList = H.ul . mconcat . fmap tagsListItem . sort
 
 tagsListItem :: String -> H.Html
 tagsListItem tag = H.li $ H.a ! A.href (fromString ("/tags/" ++ tag)) $ H.toHtml tag
 
 authorsList :: [String] -> H.Html
-authorsList = H.ul . mconcat . fmap authorsListItem
+authorsList = H.ul . mconcat . fmap authorsListItem . sort
 
 authorsListItem :: String -> H.Html
 authorsListItem author = H.li $ H.a ! A.href (fromString ("/authors/" ++ author)) $ H.toHtml author

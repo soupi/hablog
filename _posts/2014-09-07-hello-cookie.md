@@ -1,5 +1,5 @@
 title: Introduction to Markdown
-author: suppi
+authors: suppi, Gil
 tags: markdown, blogs
 
 From wikipedia: "Markdown is a plain text formatting syntax designed so that it optionally can be converted to HTML using a tool by the same name. Markdown is popularly used to format readme files, for writing messages in online discussion forums or in text editors for the quick creation of rich text documents."
