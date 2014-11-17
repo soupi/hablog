@@ -279,3 +279,8 @@ ul { padding-left: 0; }
   margin: auto;
 }
 
+.postContent ul
+{
+  padding-left: 30px;
+  list-style: initial;
+}
