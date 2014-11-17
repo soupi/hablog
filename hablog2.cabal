@@ -2,7 +2,7 @@ Name:                Hablog
 Version:             0.0.1
 Synopsis:            A blog system
 Description:         blog system with tags
-License:             BSD3
+License:             MIT
 Author:              suppi
 Maintainer:          soupiral@gmail.com
 Stability:           Experimental
