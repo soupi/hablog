@@ -40,9 +40,9 @@ notFoundPage =
 logo :: H.Html
 logo = H.header ! A.class_ "logo" $ H.h1 $ H.a ! A.href "/" $ "Hablog"
 
-errorPage :: String -> H.Html
-errorPage msg =
-  template "Error" $ do
+errorPage :: T.Text -> String -> H.Html
+errorPage ttl msg =
+  template ttl $ do
     H.h2 "Something Went Wrong..."
     H.p $ H.toHtml msg
 
@@ -76,7 +76,6 @@ postPage post = template (T.pack (Post.headerTitle post)) $ do
           H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
           H.span ! A.class_ "seperator" $ " - "
           H.span ! A.class_ "postTags" $ tagsList (Post.tags post)
-          
       H.div ! A.class_ "postContent" $ Post.content post
 
 tagsList :: [String] -> H.Html

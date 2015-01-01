@@ -5,7 +5,9 @@ module Present where
 import           Web.Scotty
 import           Data.Monoid (mconcat)
 import           Control.Monad (liftM)
+import           Control.Applicative ((<$>), pure)
 import           Control.Monad.Trans.Class (lift)
+import           Data.Maybe (catMaybes)
 import qualified Data.List as L
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as TIO
@@ -16,6 +18,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 import           Text.Blaze.Html5 ((!))
 
 import qualified System.Directory as DIR (getDirectoryContents)
+import           System.IO.Error (catchIOError)
 
 import Html
 import qualified Model as Post
@@ -38,13 +41,15 @@ presentMain = do
 getAllPosts :: IO [Post.Post]
 getAllPosts = do
   posts <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents "_posts")
-  contents <- mapM (TIO.readFile . ("_posts/"++)) posts
-  return $ reverse $ L.sort $ map (uncurry Post.toPost) $ reverse (zip posts contents)
+  contents <- catMaybes <$> mapM ((\x -> (pure <$> TIO.readFile x) `catchIOError` const (pure Nothing)) . ("_posts/"++)) posts
+  return . L.sortBy (flip compare) . catMaybes $ fmap (uncurry Post.toPost) (reverse (zip posts contents))
 
 presentPost :: T.Text -> T.Text -> ActionM ()
 presentPost date title = do
   myPost <- lift $ getPostFromFile date title
-  html $ HR.renderHtml $ postPage myPost
+  case postPage <$> myPost of
+    Just p -> html $ HR.renderHtml p
+    Nothing -> html $ HR.renderHtml $ errorPage "Hablog - 404: not found" "Could not find the page you were looking for."
 
 presentTags :: ActionM ()
 presentTags = html . HR.renderHtml . template "Posts Tags" =<< lift getTagList
@@ -64,11 +69,11 @@ presentAuthors = html . HR.renderHtml . template "Posts Authors" =<< lift getAut
 presentAuthor :: String -> ActionM ()
 presentAuthor auth = html . HR.renderHtml . template (T.pack auth) . postsListHtml . filter (hasAuthor auth) =<< lift getAllPosts
 
-getPostFromFile :: T.Text -> T.Text -> IO Post.Post
+getPostFromFile :: T.Text -> T.Text -> IO (Maybe Post.Post)
 getPostFromFile date title = do
   let postPath = T.unpack $ mconcat ["_posts/", date, "-", title, ".md"]
-  fileContent <- TIO.readFile postPath
-  let myPost = Post.toPost postPath fileContent
+  fileContent <- (pure <$> TIO.readFile postPath) `catchIOError` const (pure Nothing)
+  let myPost = Post.toPost postPath =<< fileContent
   return myPost
 
 getAllTags :: [Post.Post] -> [String]

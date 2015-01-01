@@ -2,8 +2,8 @@
 
 module Model where
 
-import         Data.Maybe (fromMaybe)
-import         Data.Char (toLower)
+import           Control.Applicative ((<$>),(<*>), pure)
+import           Data.Char (toLower)
 import qualified Data.Text.Lazy as T (Text, pack, unpack, lines, unlines, concat)
 import qualified Text.Markdown as MD
 import qualified Text.Blaze.Html5 as H
@@ -17,23 +17,31 @@ data Post = Post { year :: String
                  , tags :: [String]
                  , content :: H.Html }
 
-toPost :: String -> T.Text -> Post
-toPost path fileContent = Post yyyy mm dd pttl httl auth tgs $ MD.markdown MD.def $ T.unlines $ dropWhile (/="") $ T.lines fileContent
+toPost :: String -> T.Text -> Maybe Post
+toPost path fileContent = Post <$> yyyy <*> mm <*> dd <*> pttl <*> httl <*> auth <*> tgs <*> pure (MD.markdown MD.def (T.unlines (dropWhile (/="") (T.lines fileContent))))
   where as_list = splitBy '-' path
-        yyyy    = if length x > 1 then x !! 1 else head x where x = splitBy '/' $ head as_list 
-        mm      = as_list !! 1
-        dd      = as_list !! 2
-        pttl    = reverse $ drop 3 $ reverse $ convert ' ' $ drop 3 as_list
-        header  = takeWhile (/=[]) $ (lines . T.unpack) fileContent
-        getHd p = takeJust $ map ((\x -> if hd x == Just p then Just (unwords (tail x)) else Nothing) . words) header
-        httl    = fromMaybe "" $ getHd "title:"
-        getList = map removeWhitespaces . splitBy ',' . fromMaybe "" . getHd
+        yyyy    = (\x -> if length x > 1 then x `at` 1 else hd x) =<< fmap (splitBy '/') (hd as_list)
+        mm      = as_list `at` 1
+        dd      = as_list `at` 2
+        pttl    = pure $ reverse $ drop 3 $ reverse $ convert ' ' $ drop 3 as_list
+        header  = takeWhile (/=[]) . lines . T.unpack $ fileContent
+        getHd p = takeJust $ fmap ((\x -> if hd x == Just p then Just (unwords (tail x)) else Nothing) . words) header
+        httl    = getHd "title:"
         auth    = getList "authors:"
-        tgs     = map (map toLower) $ getList "tags:"
+        tgs     = map (map toLower) <$> getList "tags:"
+        getList x = map removeWhitespaces . splitBy ',' <$> getHd x
 
 hd :: [a] -> Maybe a
 hd [] = Nothing
 hd (x:_) = Just x
+
+at :: [a] -> Int -> Maybe a
+at [] _ = Nothing
+at (x:xs) n
+  | n > 0 = xs `at` (n-1)
+  | n == 0 = Just x
+  | otherwise = reverse xs `at` (-n)
+
 
 takeJust :: [Maybe a] -> Maybe a
 takeJust [] = Nothing
