@@ -3,7 +3,7 @@ Version:             0.0.1
 Synopsis:            A blog system
 Description:         blog system with tags
 License:             MIT
-Author:              suppi
+Author:              Gil Mizrahi
 Maintainer:          soupiral@gmail.com
 Stability:           Experimental
 Category:            Web
@@ -21,7 +21,8 @@ Executable hablog
     text,
     transformers,
     markdown,
-    directory
+    directory,
+    mime-type
 
 
   if impl(ghc >= 6.12.0)
