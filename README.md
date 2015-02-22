@@ -5,6 +5,12 @@ A simple static blog platform with tags. Made with Haskell and Scotty.
 
 Hablog will read posts written in Markdown from the `_posts` folder.
 
+License
+=======
+
+Hablog is licensed under MIT license. This means the Haskell source files in the src directory.
+Highlight.js related content is not a part of Hablog and is not licensed by it.
+
 
 Installation
 ============
