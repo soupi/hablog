@@ -6,7 +6,9 @@ import           Web.Scotty
 import           Data.Monoid (mconcat)
 import           Control.Monad (liftM)
 import qualified Data.Text.Lazy as T
+import qualified Data.Text.Lazy.Encoding as T
 import qualified Text.Blaze.Html.Renderer.Text as HR
+import qualified Network.Mime (defaultMimeLookup)
 
 import Present
 import Html (errorPage)
@@ -27,7 +29,10 @@ router = do
     path <- liftM (drop 1 . T.unpack) (param "0")
     if hasdots path then
       fail "no dots in path allowed"
-      else file path
+      else do
+        let mime = defaultMimeLookup path
+        setHeader "content-type" (T.decodeUtf8 mime)
+        file path
   get "/tags"
     presentTags
   get "/tags/:tag" $ do
