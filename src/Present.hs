@@ -20,6 +20,7 @@ import           Text.Blaze.Html5 ((!))
 import qualified System.Directory as DIR (getDirectoryContents)
 import           System.IO.Error (catchIOError)
 
+import Utils (removeWhitespaces)
 import Html
 import qualified Model as Post
 
@@ -77,13 +78,13 @@ getPostFromFile date title = do
   return myPost
 
 getAllTags :: [Post.Post] -> [String]
-getAllTags = L.sort . map (Post.removeWhitespaces . head) . L.group . L.sort . concatMap Post.tags
+getAllTags = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap Post.tags
 
 hasTag :: String -> Post.Post -> Bool
 hasTag tag = ([]/=) . filter (==tag) . Post.tags
 
 getAllAuthors :: [Post.Post] -> [String]
-getAllAuthors = L.sort . map (Post.removeWhitespaces . head) . L.group . L.sort . concatMap Post.authors
+getAllAuthors = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap Post.authors
 
 hasAuthor :: String -> Post.Post -> Bool
 hasAuthor auth myPost = auth `elem` Post.authors myPost
