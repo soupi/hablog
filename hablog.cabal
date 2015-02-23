@@ -18,6 +18,7 @@ Executable hablog
     base,
     scotty,
     blaze-html,
+    blaze-markup,
     text,
     transformers,
     markdown,

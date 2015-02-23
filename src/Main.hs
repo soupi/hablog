@@ -1,6 +1,7 @@
 module Main where
 
 import Run (run)
+import Settings (blogPort)
 
 main :: IO ()
-main = run 8080
+main = run blogPort

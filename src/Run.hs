@@ -11,6 +11,7 @@ import qualified Data.Text.Lazy as TL
 import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Network.Mime as Mime (defaultMimeLookup)
 
+import Settings
 import Present
 import Html (errorPage)
 
@@ -44,7 +45,7 @@ router = do
   get "/authors/:author" $ do
     author <- param "author"
     presentAuthor author
-  notFound $ html $ HR.renderHtml $ errorPage "Hablog - 404: not found" "404 - Could not find the page you were looking for."
+  notFound $ html $ HR.renderHtml $ errorPage (blogTitle `TL.append` " - 404: not found") "404 - Could not find the page you were looking for."
 
 hasdots :: String -> Bool
 hasdots [] = False

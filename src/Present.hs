@@ -29,7 +29,7 @@ presentMain = do
   allPosts <- lift getAllPosts
   tgs <- lift getTagList
   auths <- lift getAuthorsList
-  html $ HR.renderHtml $ template "Hablog" $ do
+  html $ HR.renderHtml $ template "Posts" $ do
   H.aside ! A.class_ "aside" $ do
     H.div ! A.class_ "AllAuthorsList" $ do
       H.h1 "Authors"

@@ -11,15 +11,16 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
 
 
+import Settings
 import qualified Model as Post
 
 template :: T.Text -> H.Html -> H.Html
 template title container =
   H.docTypeHtml $ do
     H.head $ do
-      H.title (H.toHtml title)
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/css/style.css"
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/highlight/styles/obsidian.css"
+      H.title (H.toHtml (T.concat [blogTitle, " - ", title]))
+      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (bgTheme blogTheme)
+      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (codeTheme blogTheme)
     H.body $ do
       H.div ! A.class_ "container" $ do
         logo
