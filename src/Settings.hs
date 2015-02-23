@@ -18,4 +18,7 @@ blogPort = 8080
 data Theme = Theme { bgTheme :: AttributeValue, codeTheme :: AttributeValue }
 
 darkTheme :: Theme
-darkTheme = Theme "static/css/style.css" "static/highlight/styles/obsidian.css"
+darkTheme = Theme "static/css/dark.css" "static/highlight/styles/obsidian.css"
+
+lightTheme :: Theme
+lightTheme  = Theme "static/css/light.css" "static/highlight/styles/solarized_light.css"

@@ -24,7 +24,7 @@ h3 { font-size: 32; }
 h3, h4, h5, p, input, ul, li, .nav a
 {
 
-	font-family: 'Open Sans', Helvetica, arial, sans-serif;
+//	font-family: 'Open Sans', Helvetica, arial, sans-serif;
   font-weight: 300;
 }
 a {
