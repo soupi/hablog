@@ -13,6 +13,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 
 import Settings
 import qualified Model as Post
+import qualified Page
 
 template :: T.Text -> H.Html -> H.Html
 template title container =
@@ -84,6 +85,20 @@ postPage post = template (T.pack (Post.headerTitle post)) $ do
           H.span ! A.class_ "seperator" $ " - "
           H.span ! A.class_ "postTags" $ tagsList (Post.tags post)
       H.div ! A.class_ "postContent" $ Post.content post
+
+pagePage :: Page.Page -> H.Html
+pagePage page = template (T.pack (Page.getPageName page)) $ do
+    H.article ! A.class_ "post" $ do
+      H.div ! A.class_ "postTitle" $ do
+        H.a ! A.href (fromString ("/" ++ Page.getPagePath page)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Page.getPageName page)
+      H.div ! A.class_ "postContent" $ Page.getPageContent page
+
+
+pagesList :: [String] -> H.Html
+pagesList = H.ul . mconcat . fmap pagesListItem . sort
+
+pagesListItem :: String -> H.Html
+pagesListItem name = H.li $ H.a ! A.href (fromString ("/page/" ++ name)) $ H.toHtml name
 
 tagsList :: [String] -> H.Html
 tagsList = H.ul . mconcat . fmap tagsListItem . sort

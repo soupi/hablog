@@ -45,6 +45,9 @@ router = do
   get "/authors/:author" $ do
     author <- param "author"
     presentAuthor author
+  get "/page/:page" $ do
+    page <- param "page"
+    presentPage page
   notFound $ html $ HR.renderHtml $ errorPage (blogTitle `TL.append` " - 404: not found") "404 - Could not find the page you were looking for."
 
 hasdots :: String -> Bool
