@@ -25,6 +25,7 @@ template title container =
       H.div ! A.class_ "container" $ do
         logo
         H.div ! A.class_ "maincontainer" $ container
+        footer
       H.script ! A.src "static/highlight/highlight.pack.js" $ ""
       H.script "hljs.initHighlightingOnLoad();"
 
@@ -39,7 +40,12 @@ notFoundPage =
     H.p "The page you search for is not available."
 
 logo :: H.Html
-logo = H.header ! A.class_ "logo" $ H.h1 $ H.a ! A.href "/" $ "Hablog"
+logo = H.header ! A.class_ "logo" $ H.h1 $ H.a ! A.href "/" $ H.toHtml blogTitle
+
+footer :: H.Html
+footer = H.footer ! A.class_ "footer" $ do
+    H.span $ "Powered by "
+    H.a ! A.href "https://github.com/soupi/hablog" $ "Hablog"
 
 errorPage :: T.Text -> String -> H.Html
 errorPage ttl msg =

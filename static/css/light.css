@@ -47,7 +47,7 @@ input
   margin-top: 0px;
   margin-bottom: 0px;
   clear: both;
-  height: 100%;
+  height: 97%;
 }
 
 .maincontainer
@@ -272,4 +272,11 @@ ul { padding-left: 0; }
 {
   display: block;
   margin: auto;
+}
+
+.footer {
+  color: #AAA;
+  font-size: 14px;
+  padding: 20px;
+  text-align: center;
 }
