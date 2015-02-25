@@ -14,8 +14,9 @@ data Page = Page { getPagePath :: String
                  , getPageContent :: H.Html }
 
 toPage :: String -> T.Text -> Maybe Page
-toPage path fileContent = Page <$> pure path <*> pageName <*> pure (MD.markdown MD.def (T.unlines (dropWhile (/="") (T.lines fileContent))))
+toPage path fileContent = Page <$> pure pathTtl <*> pageName <*> pure (MD.markdown MD.def (T.unlines (dropWhile (/="") (T.lines fileContent))))
   where header  = takeWhile (/=[]) . lines . T.unpack $ fileContent
+        pathTtl = reverse $ drop 3 $ reverse path
         getHd p = takeJust $ fmap ((\x -> if hd x == Just p then Just (unwords (tail x)) else Nothing) . words) header
         pageName  = getHd "name:"
 

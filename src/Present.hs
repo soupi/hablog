@@ -19,6 +19,7 @@ import           Text.Blaze.Html5 ((!))
 
 import qualified System.Directory as DIR (getDirectoryContents)
 import           System.IO.Error (catchIOError)
+import Debug.Trace (traceShowM)
 
 import Utils (removeWhitespaces)
 import Html
@@ -84,7 +85,7 @@ getTagList :: IO H.Html
 getTagList = return . tagsList . getAllTags =<< getAllPosts
 
 getPageList :: [Page.Page] -> H.Html
-getPageList = pagesList . getSortedPages
+getPageList = pagesList
 
 
 getAuthorsList :: IO H.Html
@@ -114,9 +115,6 @@ getFromFile constructor path = do
   fileContent <- (pure <$> TIO.readFile path) `catchIOError` const (pure Nothing)
   let content = constructor path =<< fileContent
   return content
-
-getSortedPages :: [Page.Page] -> [String]
-getSortedPages = L.sort . map (removeWhitespaces . head) . L.group . L.sort . map Page.getPageName
 
 getAllTags :: [Post.Post] -> [String]
 getAllTags = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap Post.tags

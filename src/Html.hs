@@ -94,11 +94,11 @@ pagePage page = template (T.pack (Page.getPageName page)) $ do
       H.div ! A.class_ "postContent" $ Page.getPageContent page
 
 
-pagesList :: [String] -> H.Html
+pagesList :: [Page.Page] -> H.Html
 pagesList = H.ul . mconcat . fmap pagesListItem . sort
 
-pagesListItem :: String -> H.Html
-pagesListItem name = H.li $ H.a ! A.href (fromString ("/page/" ++ name)) $ H.toHtml name
+pagesListItem :: Page.Page -> H.Html
+pagesListItem page = H.li $ H.a ! A.href (fromString ("/page/" ++ (Page.getPagePath page))) $ H.toHtml (Page.getPageName page)
 
 tagsList :: [String] -> H.Html
 tagsList = H.ul . mconcat . fmap tagsListItem . sort

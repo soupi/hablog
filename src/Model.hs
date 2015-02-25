@@ -25,7 +25,7 @@ toPost path fileContent = Post <$> yyyy <*> mm <*> dd <*> pttl <*> httl <*> auth
         yyyy    = (\x -> if length x > 1 then x `at` 1 else hd x) =<< fmap (splitBy '/') (hd as_list)
         mm      = as_list `at` 1
         dd      = as_list `at` 2
-        pttl    = pure $ reverse $ drop 3 $ reverse $ convert ' ' $ drop 3 as_list
+        pttl    = pure $ reverse $ drop 3 $ reverse $ convert '-' $ drop 3 as_list
         header  = takeWhile (/=[]) . lines . T.unpack $ fileContent
         getHd p = takeJust $ fmap ((\x -> if hd x == Just p then Just (unwords (tail x)) else Nothing) . words) header
         httl    = getHd "title:"
@@ -34,13 +34,13 @@ toPost path fileContent = Post <$> yyyy <*> mm <*> dd <*> pttl <*> httl <*> auth
         getList x = map removeWhitespaces . splitBy ',' <$> getHd x
 
 getPath :: Post -> String
-getPath post = concat ["post/", year post, "/", month post, "/", day post, "/", (convert '-' . splitBy ' ' . pathTitle) post]
+getPath post = concat ["post/", year post, "/", month post, "/", day post, "/", (pathTitle) post]
 
 date :: Post -> T.Text
 date post = T.concat $ map T.pack [day post, "/", month post, "/", year post]
 
 instance Show Post where
-  show post = concat ["post/", year post, "/", month post, "/", day post, "/", (convert '-' . splitBy ' ' . pathTitle) post]
+  show post = concat ["post/", year post, "/", month post, "/", day post, "/", (pathTitle) post]
 
 instance Eq Post where
   (==) p1 p2 = pathTitle p1 == pathTitle p2
