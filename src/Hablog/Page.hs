@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Page where
+module Hablog.Page where
 
 import           Control.Applicative ((<$>),(<*>), pure)
-import qualified Data.Text.Lazy as T (Text, unpack, lines, unlines, concat)
+import qualified Data.Text.Lazy as T (Text, unpack, lines, unlines)
 import qualified Text.Markdown as MD
 import qualified Text.Blaze.Html5 as H
 
-import Utils
+import Hablog.Utils
 
 data Page = Page { getPagePath :: String
                  , getPageName :: String

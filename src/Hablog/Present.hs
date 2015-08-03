@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Present where
+module Hablog.Present where
 
 import           Web.Scotty
 import           Data.Monoid (mconcat)
@@ -19,12 +19,11 @@ import           Text.Blaze.Html5 ((!))
 
 import qualified System.Directory as DIR (getDirectoryContents)
 import           System.IO.Error (catchIOError)
-import Debug.Trace (traceShowM)
 
-import Utils (removeWhitespaces)
-import Html
-import qualified Model as Post
-import qualified Page
+import Hablog.Utils (removeWhitespaces)
+import Hablog.Html
+import qualified Hablog.Model as Model
+import qualified Hablog.Page  as Page
 
 presentMain :: ActionM ()
 presentMain = do
@@ -33,15 +32,15 @@ presentMain = do
   tgs <- lift getTagList
   auths <- lift getAuthorsList
   html $ HR.renderHtml $ template "Posts" $ do
-  H.aside ! A.class_ "aside" $ do
-    presentPagesList allPages
-    H.div ! A.class_ "AllAuthorsList" $ do
-      H.h1 "Authors"
-      auths
-    H.div ! A.class_ "AllTagsList" $ do
-      H.h1 "Tags"
-      tgs
-  postsListHtml allPosts
+    H.aside ! A.class_ "aside" $ do
+      presentPagesList allPages
+      H.div ! A.class_ "AllAuthorsList" $ do
+        H.h1 "Authors"
+        auths
+      H.div ! A.class_ "AllTagsList" $ do
+        H.h1 "Tags"
+        tgs
+    postsListHtml allPosts
 
 
 presentPagesList :: [Page.Page] -> H.Html
@@ -65,11 +64,11 @@ getAllPages = do
   contents <- catMaybes <$> mapM ((\x -> (pure <$> TIO.readFile x) `catchIOError` const (pure Nothing)) . ("_pages/"++)) pages
   return . L.sortBy (flip compare) . catMaybes $ fmap (uncurry Page.toPage) (reverse (zip pages contents))
 
-getAllPosts :: IO [Post.Post]
+getAllPosts :: IO [Model.Post]
 getAllPosts = do
   posts <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents "_posts")
   contents <- catMaybes <$> mapM ((\x -> (pure <$> TIO.readFile x) `catchIOError` const (pure Nothing)) . ("_posts/"++)) posts
-  return . L.sortBy (flip compare) . catMaybes $ fmap (uncurry Post.toPost) (reverse (zip posts contents))
+  return . L.sortBy (flip compare) . catMaybes $ fmap (uncurry Model.toPost) (reverse (zip posts contents))
 
 presentPost :: T.Text -> T.Text -> ActionM ()
 presentPost date title = do
@@ -105,10 +104,10 @@ getPageFromFile title = do
   let path = T.unpack $ mconcat ["_pages/", title, ".md"]
   getFromFile Page.toPage path
 
-getPostFromFile :: T.Text -> T.Text -> IO (Maybe Post.Post)
+getPostFromFile :: T.Text -> T.Text -> IO (Maybe Model.Post)
 getPostFromFile date title = do
   let postPath = T.unpack $ mconcat ["_posts/", date, "-", title, ".md"]
-  getFromFile Post.toPost postPath
+  getFromFile Model.toPost postPath
 
 getFromFile :: (String -> T.Text -> Maybe a) -> String -> IO (Maybe a)
 getFromFile constructor path = do
@@ -116,15 +115,15 @@ getFromFile constructor path = do
   let content = constructor path =<< fileContent
   return content
 
-getAllTags :: [Post.Post] -> [String]
-getAllTags = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap Post.tags
+getAllTags :: [Model.Post] -> [String]
+getAllTags = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap Model.tags
 
-hasTag :: String -> Post.Post -> Bool
-hasTag tag = ([]/=) . filter (==tag) . Post.tags
+hasTag :: String -> Model.Post -> Bool
+hasTag tag = ([]/=) . filter (==tag) . Model.tags
 
-getAllAuthors :: [Post.Post] -> [String]
-getAllAuthors = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap Post.authors
+getAllAuthors :: [Model.Post] -> [String]
+getAllAuthors = L.sort . map (removeWhitespaces . head) . L.group . L.sort . concatMap Model.authors
 
 
-hasAuthor :: String -> Post.Post -> Bool
-hasAuthor auth myPost = auth `elem` Post.authors myPost
+hasAuthor :: String -> Model.Post -> Bool
+hasAuthor auth myPost = auth `elem` Model.authors myPost

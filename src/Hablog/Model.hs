@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Model where
+module Hablog.Model where
 
 import           Control.Applicative ((<$>),(<*>), pure)
 import           Data.Char (toLower)
@@ -8,7 +8,7 @@ import qualified Data.Text.Lazy as T (Text, pack, unpack, lines, unlines, concat
 import qualified Text.Markdown as MD
 import qualified Text.Blaze.Html5 as H
 
-import Utils
+import Hablog.Utils
 
 data Post = Post { year :: String
                  , month :: String

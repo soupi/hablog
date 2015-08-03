@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Settings where
+module Hablog.Settings where
 
 import Data.Text.Lazy (Text)
 import Text.Blaze.Internal (AttributeValue)

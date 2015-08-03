@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Html where
+module Hablog.Html where
 
 import Data.Monoid (mconcat)
 import Data.String (fromString)
@@ -11,9 +11,9 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
 
 
-import Settings
-import qualified Model as Post
-import qualified Page
+import Hablog.Settings
+import qualified Hablog.Model as Model
+import qualified Hablog.Page  as Page
 
 template :: T.Text -> H.Html -> H.Html
 template title container =
@@ -58,33 +58,33 @@ emptyPage :: H.Html
 emptyPage = H.span " "
 
 
-postsListHtml :: [Post.Post] -> H.Html
+postsListHtml :: [Model.Post] -> H.Html
 postsListHtml posts =
-   H.div ! A.class_ "PostsList" $ do 
+   H.div ! A.class_ "PostsList" $ do
     H.h1 "Posts"
     postsList posts
 
-postsList :: [Post.Post] -> H.Html
+postsList :: [Model.Post] -> H.Html
 postsList = H.ul . mconcat . fmap postsListItem
 
-postsListItem :: Post.Post -> H.Html
+postsListItem :: Model.Post -> H.Html
 postsListItem post = H.li $ do
-  H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
+  H.span ! A.class_ "postDate" $ H.toHtml $ Model.date post
   H.span ! A.class_ "seperator" $ " - "
-  H.a ! A.href (fromString ("/" ++ Post.getPath post)) $ H.toHtml $ Post.headerTitle post
+  H.a ! A.href (fromString ("/" ++ Model.getPath post)) $ H.toHtml $ Model.headerTitle post
 
-postPage :: Post.Post -> H.Html
-postPage post = template (T.pack (Post.headerTitle post)) $ do
+postPage :: Model.Post -> H.Html
+postPage post = template (T.pack (Model.headerTitle post)) $ do
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
-        H.a ! A.href (fromString ("/" ++ Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.headerTitle post)
+        H.a ! A.href (fromString ("/" ++ Model.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Model.headerTitle post)
         H.span ! A.class_ "postSubTitle" $ do
-          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList $ Post.authors post
+          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList $ Model.authors post
           H.span ! A.class_ "seperator" $ " - "
-          H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
+          H.span ! A.class_ "postDate" $ H.toHtml $ Model.date post
           H.span ! A.class_ "seperator" $ " - "
-          H.span ! A.class_ "postTags" $ tagsList (Post.tags post)
-      H.div ! A.class_ "postContent" $ Post.content post
+          H.span ! A.class_ "postTags" $ tagsList (Model.tags post)
+      H.div ! A.class_ "postContent" $ Model.content post
 
 pagePage :: Page.Page -> H.Html
 pagePage page = template (T.pack (Page.getPageName page)) $ do

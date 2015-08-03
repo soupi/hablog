@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Utils where
+module Hablog.Utils where
 
 hd :: [a] -> Maybe a
 hd [] = Nothing

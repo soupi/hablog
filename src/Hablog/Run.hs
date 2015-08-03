@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Run where
+module Hablog.Run where
 
 import           Web.Scotty
 import           Data.Monoid (mconcat)
@@ -11,9 +11,9 @@ import qualified Data.Text.Lazy as TL
 import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Network.Mime as Mime (defaultMimeLookup)
 
-import Settings
-import Present
-import Html (errorPage)
+import Hablog.Settings
+import Hablog.Present
+import Hablog.Html (errorPage)
 
 run :: Int -> IO ()
 run port = scotty port router
