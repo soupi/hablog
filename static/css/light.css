@@ -248,7 +248,7 @@ ul { padding-left: 0; }
 .postHeader
 {
   color: black;
-  font-weight: 300;
+  font-weight: 700;
   font-size: 28px;
 }
 .postContent h1 { font-size: 26px; }
@@ -261,7 +261,7 @@ ul { padding-left: 0; }
 .postContent h1, .postContent h2, .postContent h3, .postContent h4, .postContent h5, .postContent h6
 {
   color: #111;
-  font-weight: normal;
+  font-weight: 700;
 }
 .postContent
 {
