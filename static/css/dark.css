@@ -19,12 +19,13 @@ h2 {
   font-weight: 300;
   color: #A5FF61;
   margin-bottom: 0;
+  font-size: 28px;
 }
-h3 { font-size: 32; }
+h3 { font-size: 24px; }
 h3, h4, h5, p, input, ul, li, .nav a
 {
 
-//	font-family: 'Open Sans', Helvetica, arial, sans-serif;
+	font-family: 'Open Sans', Helvetica, arial, sans-serif;
   font-weight: 300;
 }
 a {
@@ -246,29 +247,32 @@ table {
 .PostsList { margin-left: 20px; }
 ul { padding-left: 0; }
 
-.postHeader { font-size: 27px; }
-.postContent h1 { font-size: 26px; }
+.postHeader { font-size: 28px; }
+.postContent h1 { font-size: 28px; }
 .postContent h2 { font-size: 24px; }
-.postContent h3 { font-size: 22px; }
-.postContent h4 { font-size: 20px; }
-.postContent h5 { font-size: 18px; }
-.postContent h6 { font-size: 16px; }
+.postContent h3 { font-size: 20px; }
+.postContent h4 { font-size: 17px; }
+.postContent h5 { font-size: 14px; }
+.postContent h6 { font-size: 12px; }
 
 .postContent h1, .postContent h2, .postContent h3, .postContent h4, .postContent h5, .postContent h6
 {
+  font-weight: 700;
   color: #fff;
-  font-weight: 300;
 }
 .postContent
 {
-  font-family: 'Lucida Sans Unicode', helvetica, arial, sans-serif;
   font-weight: normal;
-  color: #ddd;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
 }
 .postContent p, .postContent li
 {
-  font-size: 16px;
-  color: #ddd;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  color: #f0f0f0;
 
 }
 
@@ -288,4 +292,10 @@ ul { padding-left: 0; }
   font-size: 14px;
   padding: 20px;
   text-align: center;
+}
+
+code {
+  background-color: #2F3233;
+  padding-left: 2px;
+  padding-right: 2px;
 }
