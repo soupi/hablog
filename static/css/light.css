@@ -265,17 +265,17 @@ ul { padding-left: 0; }
 {
 	font-family: 'Roboto', helvetica, arial, sans-serif;
   font-weight: initial;
+  font-size: 17px;
 }
 
 .postContent img
 {
   display: block;
   margin: auto;
-  font-size: 17px;
 }
 
 .footer {
-  color: #AAA;
+  color: #666;
   font-size: 14px;
   padding: 20px;
   text-align: center;
