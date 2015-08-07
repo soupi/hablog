@@ -6,10 +6,10 @@ import Data.Text.Lazy (Text)
 import Text.Blaze.Internal (AttributeValue)
 
 blogTitle :: Text
-blogTitle = "λm"
+blogTitle = "Hablog"
 
 blogTheme :: Theme
-blogTheme = lightTheme
+blogTheme = darkTheme
 
 
 blogPort :: Int
