@@ -86,7 +86,9 @@ input
   color: #555;
 }
 
-ul {	list-style: none; }
+ul { list-style: none; }
+
+.postContent ul { list-style: inside; }
 
 .nav a
 {
