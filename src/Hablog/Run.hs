@@ -14,6 +14,7 @@ import qualified Network.Mime as Mime (defaultMimeLookup)
 import Hablog.Settings
 import Hablog.Present
 import Hablog.Html (errorPage)
+import Hablog.Post (eqY, eqYM, eqDate)
 
 run :: Int -> IO ()
 run port = scotty port router
@@ -38,6 +39,18 @@ router = do
         let mime = Mime.defaultMimeLookup (T.pack path)
         setHeader "content-type" $ TL.fromStrict (T.decodeUtf8 mime)
         file path
+  get "/post/:yyyy/:mm/:dd" $ do
+    yyyy <- param "yyyy"
+    mm <- param "mm"
+    dd <- param "dd"
+    showPostsWhere (eqDate (yyyy, mm, dd))
+  get "/post/:yyyy/:mm" $ do
+    yyyy <- param "yyyy"
+    mm <- param "mm"
+    showPostsWhere (eqYM (yyyy, mm))
+  get "/post/:yyyy" $ do
+    yyyy <- param "yyyy"
+    showPostsWhere (eqY yyyy)
   get "/tags"
     presentTags
   get "/tags/:tag" $ do

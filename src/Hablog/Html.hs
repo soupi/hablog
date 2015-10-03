@@ -68,7 +68,7 @@ postsList = H.ul . mconcat . fmap postsListItem
 
 postsListItem :: Post.Post -> H.Html
 postsListItem post = H.li $ do
-  H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
+  H.span ! A.class_ "postDate" $ H.toHtml $ Post.getDate post
   H.span ! A.class_ "seperator" $ " - "
   H.a ! A.href (fromString $ T.unpack ("/" `T.append` Post.getPath post)) $ H.toHtml $ Post.title post
 
@@ -80,7 +80,7 @@ postPage post = template (Post.title post) $
         H.span ! A.class_ "postSubTitle" $ do
           H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList $ Post.authors post
           H.span ! A.class_ "seperator" $ " - "
-          H.span ! A.class_ "postDate" $ H.toHtml $ Post.date post
+          H.span ! A.class_ "postDate" $ H.toHtml $ Post.getDate post
           H.span ! A.class_ "seperator" $ " - "
           H.span ! A.class_ "postTags" $ tagsList (Post.tags post)
       H.div ! A.class_ "postContent" $ Post.content post

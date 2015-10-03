@@ -41,6 +41,11 @@ presentMain = do
         tgs
     postsListHtml allPosts
 
+showPostsWhere :: (Post.Post -> Bool) -> ActionM ()
+showPostsWhere test = do
+  allPosts <- lift getAllPosts
+  html $ HR.renderHtml $ template "Posts" $
+    postsListHtml $ filter test allPosts
 
 presentPagesList :: [Page.Page] -> H.Html
 presentPagesList [] = return ()
