@@ -5,7 +5,6 @@ module Hablog.Page where
 import           Control.Arrow  ((&&&))
 import qualified Data.Map as M
 import qualified Data.Text.Lazy as T
-import qualified Text.Markdown as MD
 import qualified Text.Blaze.Html5 as H
 
 import Hablog.Utils
@@ -23,15 +22,6 @@ toPage fileContent =
        <*> M.lookup "title" header
        <*> pure (createBody content)
     where (header, content) = (getHeader &&& getContent) fileContent
-
-getHeader :: T.Text -> M.Map T.Text T.Text
-getHeader = M.fromList . filter ((/=)"" . snd) . map (partition ':') . takeWhile (not . T.isPrefixOf headerBreaker) . T.lines
-
-getContent :: T.Text -> T.Text
-getContent = T.unlines . dropWhile (T.isPrefixOf headerBreaker) . dropWhile (not . T.isPrefixOf headerBreaker) . T.lines
-
-createBody :: T.Text -> H.Html
-createBody = MD.markdown MD.def
 
 
 instance Show Page where

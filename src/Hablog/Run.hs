@@ -29,7 +29,7 @@ router = do
     mm <- param "mm"
     dd <- param "dd"
     title <- param "title"
-    presentPost (mconcat [yyyy,"-",mm,"-",dd]) title
+    presentPost (mconcat [yyyy,"/",mm,"/",dd, "/", title])
   get (regex "/static/(.*)") $ do
     path <- liftM (drop 1 . T.unpack) (param "0")
     if hasdots path then

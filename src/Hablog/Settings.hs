@@ -18,7 +18,7 @@ blogPort = 80
 data Theme = Theme { bgTheme :: AttributeValue, codeTheme :: AttributeValue }
 
 darkTheme :: Theme
-darkTheme = Theme "static/css/dark.css" "static/highlight/styles/hybrid.css"
+darkTheme = Theme "/static/css/dark.css" "/static/highlight/styles/hybrid.css"
 
 lightTheme :: Theme
-lightTheme  = Theme "static/css/light.css" "static/highlight/styles/docco.css"
+lightTheme  = Theme "/static/css/light.css" "/static/highlight/styles/docco.css"

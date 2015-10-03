@@ -4,6 +4,9 @@ module Hablog.Utils where
 
 import Control.Arrow ((&&&))
 import qualified Data.Text.Lazy as T
+import qualified Data.Map as M
+import qualified Text.Markdown as MD
+import qualified Text.Blaze.Html5 as H
 
 hd :: [a] -> Maybe a
 hd [] = Nothing
@@ -43,4 +46,16 @@ x |> f = f x
 
 partition :: Char -> T.Text -> (T.Text, T.Text)
 partition c = T.takeWhile (/=c) &&& (T.unwords . T.words . T.dropWhile (==c) . T.dropWhile (/=c))
+
+
+getHeader :: T.Text -> M.Map T.Text T.Text
+getHeader = M.fromList . filter ((/=)"" . snd) . map (partition ':') . takeWhile (not . T.isPrefixOf headerBreaker) . T.lines
+
+getContent :: T.Text -> T.Text
+getContent = T.unlines . dropWhile (T.isPrefixOf headerBreaker) . dropWhile (not . T.isPrefixOf headerBreaker) . T.lines
+
+createBody :: T.Text -> H.Html
+createBody = MD.markdown MD.def
+
+
 
