@@ -2,7 +2,6 @@
 
 module Hablog.Html where
 
-import Data.Monoid (mconcat)
 import Data.String (fromString)
 import Data.List (sort)
 import qualified Data.Text.Lazy as T
@@ -87,10 +86,10 @@ postPage post = template (T.pack (Model.headerTitle post)) $ do
       H.div ! A.class_ "postContent" $ Model.content post
 
 pagePage :: Page.Page -> H.Html
-pagePage page = template (T.pack (Page.getPageName page)) $ do
+pagePage page = template (Page.getPageName page) $ do
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
-        H.a ! A.href (fromString ("/" ++ Page.getPagePath page)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Page.getPageName page)
+        H.a ! A.href (fromString (Page.getPageURL page)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Page.getPageName page)
       H.div ! A.class_ "postContent" $ Page.getPageContent page
 
 
@@ -98,7 +97,7 @@ pagesList :: [Page.Page] -> H.Html
 pagesList = H.ul . mconcat . fmap pagesListItem . sort
 
 pagesListItem :: Page.Page -> H.Html
-pagesListItem page = H.li $ H.a ! A.href (fromString ("/page/" ++ (Page.getPagePath page))) $ H.toHtml (Page.getPageName page)
+pagesListItem page = H.li $ H.a ! A.href (fromString ("/page/" ++ (Page.getPageURL page))) $ H.toHtml (Page.getPageName page)
 
 tagsList :: [String] -> H.Html
 tagsList = H.ul . mconcat . fmap tagsListItem . sort

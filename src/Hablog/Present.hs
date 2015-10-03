@@ -3,9 +3,7 @@
 module Hablog.Present where
 
 import           Web.Scotty
-import           Data.Monoid (mconcat)
 import           Control.Monad (liftM)
-import           Control.Applicative ((<$>), pure)
 import           Control.Monad.Trans.Class (lift)
 import           Data.Maybe (catMaybes)
 import qualified Data.List as L
@@ -53,16 +51,16 @@ presentPagesList pages = do
 
 presentPage :: T.Text -> ActionM ()
 presentPage title = do
-  myPage <- lift $ getPageFromFile title
-  case pagePage <$> myPage of
-    Just p -> html $ HR.renderHtml p
-    Nothing -> html $ HR.renderHtml $ errorPage "Hablog - 404: not found" "Could not find the page you were looking for."
+  pages  <- lift getAllPages
+  case filter ((== T.unpack title) . Page.getPageURL) pages of
+    (p:_) -> html $ HR.renderHtml $ pagePage p
+    _     -> html $ HR.renderHtml $ errorPage "Hablog - 404: not found" "Could not find the page you were looking for."
 
 getAllPages :: IO [Page.Page]
 getAllPages = do
   pages <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents "_pages" `catchIOError` (\_ -> return []))
   contents <- catMaybes <$> mapM ((\x -> (pure <$> TIO.readFile x) `catchIOError` const (pure Nothing)) . ("_pages/"++)) pages
-  return . L.sortBy (flip compare) . catMaybes $ fmap (uncurry Page.toPage) (reverse (zip pages contents))
+  return . L.sortBy (flip compare) . catMaybes $ fmap Page.toPage (reverse contents)
 
 getAllPosts :: IO [Model.Post]
 getAllPosts = do
@@ -101,8 +99,8 @@ presentAuthor auth = html . HR.renderHtml . template (T.pack auth) . postsListHt
 
 getPageFromFile :: T.Text -> IO (Maybe Page.Page)
 getPageFromFile title = do
-  let path = T.unpack $ mconcat ["_pages/", title, ".md"]
-  getFromFile Page.toPage path
+  let path = T.unpack $ mconcat ["_pages/", title]
+  getFromFile (const Page.toPage) path
 
 getPostFromFile :: T.Text -> T.Text -> IO (Maybe Model.Post)
 getPostFromFile date title = do

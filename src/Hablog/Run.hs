@@ -3,7 +3,7 @@
 module Hablog.Run where
 
 import           Web.Scotty
-import           Data.Monoid (mconcat)
+import           Web.Scotty.TLS (scottyTLS)
 import           Control.Monad (liftM)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
@@ -17,6 +17,9 @@ import Hablog.Html (errorPage)
 
 run :: Int -> IO ()
 run port = scotty port router
+
+runTLS :: Int -> FilePath -> FilePath -> IO ()
+runTLS port key cert = scottyTLS port key cert router
 
 router :: ScottyM ()
 router = do

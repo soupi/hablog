@@ -22,15 +22,19 @@ source-repository head
 
 library
   Build-depends:
-    base,
-    scotty,
-    blaze-html,
-    blaze-markup,
-    text,
-    transformers,
-    markdown,
-    directory,
-    mime-types
+    base
+   ,scotty
+   ,scotty-tls >= 0.4
+   ,blaze-html
+   ,blaze-markup
+   ,text
+   ,bifunctors
+   ,transformers
+   ,markdown
+   ,directory
+   ,filepath
+   ,mime-types
+   ,containers
 
   exposed-modules:
     Hablog.Run

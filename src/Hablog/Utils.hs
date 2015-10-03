@@ -2,6 +2,9 @@
 
 module Hablog.Utils where
 
+import Control.Arrow ((&&&))
+import qualified Data.Text.Lazy as T
+
 hd :: [a] -> Maybe a
 hd [] = Nothing
 hd (x:_) = Just x
@@ -13,6 +16,8 @@ at (x:xs) n
   | n == 0 = Just x
   | otherwise = reverse xs `at` (-n)
 
+headerBreaker :: T.Text
+headerBreaker = "---"
 
 takeJust :: [Maybe a] -> Maybe a
 takeJust [] = Nothing
@@ -31,4 +36,11 @@ splitBy c txt = map reverse $ go [] txt
 
 removeWhitespaces :: String -> String
 removeWhitespaces = unwords . words
+
+infixl 0 |>
+(|>) :: a -> (a -> b) -> b
+x |> f = f x
+
+partition :: Char -> T.Text -> (T.Text, T.Text)
+partition c = T.takeWhile (/=c) &&& (T.unwords . T.words . T.dropWhile (==c) . T.dropWhile (/=c))
 
