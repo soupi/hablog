@@ -6,9 +6,11 @@ import           Web.Scotty
 import           Control.Monad (liftM)
 import           Control.Monad.Trans.Class (lift)
 import           Data.Maybe (catMaybes)
+import           Data.Either (rights)
 import qualified Data.List as L
 import qualified Data.Text.Lazy as T
-import qualified Data.Text.Lazy.IO as TIO
+import qualified Data.Text.Lazy.Encoding as T
+import qualified Data.ByteString.Lazy as BSL
 
 import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Text.Blaze.Html5 as H
@@ -56,16 +58,18 @@ presentPage title = do
     _     -> html $ HR.renderHtml $ errorPage "Hablog - 404: not found" "Could not find the page you were looking for."
 
 getAllPages :: IO [Page.Page]
-getAllPages = do
-  pages <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents "_pages" `catchIOError` (\_ -> return []))
-  contents <- catMaybes <$> mapM ((\x -> (pure <$> TIO.readFile x) `catchIOError` const (pure Nothing)) . ("_pages/"++)) pages
-  return . L.sortBy (flip compare) . catMaybes $ fmap Page.toPage (reverse contents)
+getAllPages = getAllFromDir Page.toPage "_pages"
 
 getAllPosts :: IO [Post.Post]
-getAllPosts = do
-  posts <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents "_posts")
-  contents <- catMaybes <$> mapM ((\x -> (pure <$> TIO.readFile x) `catchIOError` const (pure Nothing)) . ("_posts/"++)) posts
-  pure . L.sortBy (flip compare) . catMaybes $ fmap Post.toPost (reverse contents)
+getAllPosts = getAllFromDir Post.toPost "_posts"
+
+getAllFromDir :: Ord a => (T.Text -> Maybe a) -> FilePath -> IO [a]
+getAllFromDir parse dir = do
+  posts <- liftM (L.delete ".." . L.delete ".") (DIR.getDirectoryContents dir `catchIOError` (\_ -> return []))
+  contents <- rights <$> mapM ((\x -> (T.decodeUtf8' <$> BSL.readFile x) `catchIOError` const (pure $ Left undefined)) . ((dir++"/")++)) posts
+  pure . L.sortBy (flip compare) . catMaybes $ fmap parse (reverse contents)
+
+
 
 presentPost :: T.Text -> ActionM ()
 presentPost title = do
@@ -109,8 +113,11 @@ getPostFromFile date title = do
 
 getFromFile :: (T.Text -> Maybe a) -> String -> IO (Maybe a)
 getFromFile constructor path = do
-  fileContent <- (pure <$> TIO.readFile path) `catchIOError` const (pure Nothing)
-  let content = constructor =<< fileContent
+  fileContent <- (T.decodeUtf8' <$> BSL.readFile path) `catchIOError` const (pure $ Left undefined)
+  let cont = case fileContent of
+              Left _  -> Nothing
+              Right x -> Just x
+  let content = constructor =<< cont
   return content
 
 getAllTags :: [Post.Post] -> [T.Text]

@@ -28,6 +28,7 @@ library
    ,blaze-html
    ,blaze-markup
    ,text
+   ,bytestring
    ,bifunctors
    ,transformers
    ,markdown
