@@ -1,5 +1,5 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:300,300italics,400,700,400italic,700italic);
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,300italics,400,700,400italic,700italic);
+@import url(//fonts.googleapis.com/css?family=Roboto:300,300italics,400,700,400italic,700italic);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:300,300italics,400,700,400italic,700italic);
 
 
 html, body { height:98%; }
@@ -88,7 +88,10 @@ input
 
 ul { list-style: none; }
 
-.postContent ul { list-style: inside; }
+.postContent ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
 
 .nav a
 {
@@ -102,7 +105,7 @@ a:visited {
 a {
 	color: #0b85ef;
 	text-decoration: none;
-	font-weight: regular;
+	font-weight: normal;
 
 	-webkit-transition: all 0.3s ease;
 	-moz-transition: all 0.3s ease;
@@ -118,7 +121,6 @@ a:hover {
 }
 
 .rounded-corners, .sidebar, .header, .container, .maincontainer, .content article {
-     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     -khtml-border-radius: 5px;
     border-radius: 5px;
@@ -151,9 +153,8 @@ label {
 }
 .formdiv input[type='text']
 {
-	width: 90%;
+  width: 90%;
   margin-right: 5px;
-	//margin: auto;
 }
 .formdiv
 {
@@ -162,14 +163,13 @@ label {
 .addformdiv label
 {
   display:block;
-	width: 200px;
+  width: 200px;
   margin-bottom: 5px;
   font-size: 18px;
 }
 .addformdiv input[type='text'], input[type="url"]
 {
   width: 50%;
-	//margin: auto;
 }
 .addformdiv
 {
@@ -199,7 +199,7 @@ table {
 #bgimg
 {
   float: right;
-  z-index; -1;
+  z-index: -1;
 }
 
 .post { margin: 20px; }
@@ -265,7 +265,7 @@ ul { padding-left: 0; }
 }
 .postContent
 {
-	font-family: 'Roboto', helvetica, arial, sans-serif;
+  font-family: 'Roboto', helvetica, arial, sans-serif;
   font-weight: initial;
   font-size: 17px;
 }
