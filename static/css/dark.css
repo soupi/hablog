@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600,600italic,700,700italic);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600,600italic,700,700italic);
 
 html, body { height:98%; }
 body {
@@ -99,7 +99,7 @@ a:visited {
 a {
 	color: #79BAF2;
 	text-decoration: none;
-	font-weight: regular;
+	font-weight: normal;
 
 	-webkit-transition: all 0.3s ease;
 	-moz-transition: all 0.3s ease;
@@ -115,7 +115,6 @@ a:hover {
 }
 
 .rounded-corners, .sidebar, .header, .container, .maincontainer, .content article {
-     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     -khtml-border-radius: 5px;
     border-radius: 5px;
@@ -148,9 +147,8 @@ label {
 }
 .formdiv input[type='text']
 {
-	width: 90%;
+  width: 90%;
   margin-right: 5px;
-	//margin: auto;
 }
 .formdiv
 {
@@ -166,7 +164,6 @@ label {
 .addformdiv input[type='text'], input[type="url"]
 {
   width: 50%;
-	//margin: auto;
 }
 .addformdiv
 {
@@ -196,7 +193,7 @@ table {
 #bgimg
 {
   float: right;
-  z-index; -1;
+  z-index: -1;
 }
 
 .post { margin: 20px; }
