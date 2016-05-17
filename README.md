@@ -1,7 +1,7 @@
 Hablog
 ======
 
-A simple static blog platform with tags. Made with Haskell and Scotty.
+A simple blog platform with tags. Made with Haskell and Scotty.
 
 Hablog will read posts written in Markdown from the `_posts` folder.
 
@@ -18,8 +18,7 @@ Installation
 ```sh
 git clone https://github.com/soupi/hablog
 cd hablog
-cabal sandbox init
-cabal install
+stack build
 ```
 
 

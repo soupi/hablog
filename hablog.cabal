@@ -1,5 +1,5 @@
 Name:                hablog
-Version:             0.3.0
+Version:             0.4.0
 Synopsis:            A blog system
 Description:         blog system with tags
 License:             MIT
@@ -28,6 +28,8 @@ library
    ,blaze-html
    ,blaze-markup
    ,text
+   ,mtl
+   ,transformers
    ,bytestring
    ,bifunctors
    ,transformers
@@ -38,13 +40,18 @@ library
    ,containers
 
   exposed-modules:
-    Hablog.Run
-    Hablog.Settings
-    Hablog.Utils
-    Hablog.Present
-    Hablog.Page
-    Hablog.Post
-    Hablog.Html
+    Web.Hablog
+    Web.Hablog.Run
+    Web.Hablog.Config
+    Web.Hablog.Types
+
+  other-modules:
+    Web.Hablog.Utils
+    Web.Hablog.Html
+    Web.Hablog.Post
+    Web.Hablog.Page
+    Web.Hablog.Present
+
   exposed:
     True
 
@@ -61,13 +68,11 @@ library
     other-extensions:
       FlexibleInstances
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
-                 -fno-warn-orphans -fno-warn-unused-do-bind
   else
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
-                 -fno-warn-orphans
 
 Executable hablog
-  hs-source-dirs: exec-src
+  hs-source-dirs: app
   main-is: Main.hs
 
   Build-depends:
@@ -81,7 +86,5 @@ Executable hablog
     other-extensions:
       FlexibleInstances
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
-                 -fno-warn-orphans -fno-warn-unused-do-bind
   else
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
-                 -fno-warn-orphans

@@ -1,38 +1,45 @@
+-- | Running Hablog
+
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hablog.Run where
+module Web.Hablog.Run where
 
-import           Web.Scotty
-import           Web.Scotty.TLS (scottyTLS)
-import           Control.Monad (liftM)
+import           Web.Scotty.Trans
+import           Web.Scotty.TLS (scottyTTLS)
+import           Control.Monad.Trans.Reader (runReaderT)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Text.Lazy as TL
 import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Network.Mime as Mime (defaultMimeLookup)
 
-import Hablog.Settings
-import Hablog.Present
-import Hablog.Html (errorPage)
-import Hablog.Post (eqY, eqYM, eqDate)
+import Web.Hablog.Types
+import Web.Hablog.Config
+import Web.Hablog.Present
+import Web.Hablog.Html (errorPage)
+import Web.Hablog.Post (eqY, eqYM, eqDate)
 
-run :: Int -> IO ()
-run port = scotty port router
 
-runTLS :: Int -> FilePath -> FilePath -> IO ()
-runTLS port key cert = scottyTLS port key cert router
+-- | Run Hablog on HTTP
+run :: Config -> Int -> IO ()
+run cfg port =
+  scottyT port (`runReaderT` cfg) router
 
-router :: ScottyM ()
+-- | Run Hablog on HTTPS
+runTLS :: TLSConfig -> Config -> IO ()
+runTLS tlsCfg cfg =
+  scottyTTLS (blogTLSPort tlsCfg) (blogKey tlsCfg) (blogCert tlsCfg) (`runReaderT` cfg) router
+
+-- | Hablog's router
+router :: Hablog ()
 router = do
   get "/" presentMain
   get "/post/:yyyy/:mm/:dd/:title" $ do
-    yyyy <- param "yyyy"
-    mm <- param "mm"
-    dd <- param "dd"
+    (yyyy, mm, dd) <- getDate
     title <- param "title"
     presentPost (mconcat [yyyy,"/",mm,"/",dd, "/", title])
   get (regex "/static/(.*)") $ do
-    path <- liftM (drop 1 . T.unpack) (param "0")
+    path <- fmap (drop 1 . T.unpack) (param "0")
     if hasdots path then
       fail "no dots in path allowed"
       else do
@@ -40,9 +47,7 @@ router = do
         setHeader "content-type" $ TL.fromStrict (T.decodeUtf8 mime)
         file path
   get "/post/:yyyy/:mm/:dd" $ do
-    yyyy <- param "yyyy"
-    mm <- param "mm"
-    dd <- param "dd"
+    (yyyy, mm, dd) <- getDate
     showPostsWhere (eqDate (yyyy, mm, dd))
   get "/post/:yyyy/:mm" $ do
     yyyy <- param "yyyy"
@@ -64,9 +69,16 @@ router = do
   get "/page/:page" $ do
     page <- param "page"
     presentPage page
-  notFound $ html $ HR.renderHtml $ errorPage (blogTitle `TL.append` " - 404: not found") "404 - Could not find the page you were looking for."
+  notFound $ do
+    cfg <- getCfg
+    html $ HR.renderHtml $ errorPage cfg (blogTitle cfg `TL.append` " - 404: not found") "404 - Could not find the page you were looking for."
 
-hasdots :: String -> Bool
-hasdots [] = False
-hasdots ('.':'.':_) = True
-hasdots (_:rest) = hasdots rest
+  where
+    getDate =  (,,)
+           <$> param "yyyy"
+           <*> param "mm"
+           <*> param "dd"
+
+    hasdots [] = False
+    hasdots ('.':'.':_) = True
+    hasdots (_:rest) = hasdots rest

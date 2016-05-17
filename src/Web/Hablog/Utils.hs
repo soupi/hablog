@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hablog.Utils where
+module Web.Hablog.Utils where
 
 import Control.Arrow ((&&&))
 import qualified Data.Text.Lazy as T

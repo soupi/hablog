@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hablog.Post where
+module Web.Hablog.Post where
 
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Map as M
 
-import Hablog.Utils
+import Web.Hablog.Utils
 
 
 data Post

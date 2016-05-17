@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hablog.Page where
+module Web.Hablog.Page where
 
 import           Control.Arrow  ((&&&))
 import qualified Data.Map as M
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 
-import Hablog.Utils
+import Web.Hablog.Utils
 
 data Page
     = Page

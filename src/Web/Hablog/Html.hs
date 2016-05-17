@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hablog.Html where
+module Web.Hablog.Html where
 
 import Data.String (fromString)
 import Data.List (sort)
@@ -10,20 +10,20 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
 
 
-import Hablog.Settings
-import qualified Hablog.Post as Post
-import qualified Hablog.Page as Page
+import Web.Hablog.Config
+import qualified Web.Hablog.Post as Post
+import qualified Web.Hablog.Page as Page
 
-template :: T.Text -> H.Html -> H.Html
-template title container =
+template :: Config -> T.Text -> H.Html -> H.Html
+template cfg title container =
   H.docTypeHtml $ do
     H.head $ do
-      H.title (H.toHtml (T.concat [blogTitle, " - ", title]))
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (bgTheme blogTheme)
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (codeTheme blogTheme)
+      H.title (H.toHtml (T.concat [blogTitle cfg, " - ", title]))
+      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (bgTheme $ blogTheme cfg)
+      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (codeTheme $ blogTheme cfg)
     H.body $ do
       H.div ! A.class_ "container" $ do
-        logo
+        logo cfg
         H.div ! A.class_ "maincontainer" $ container
         footer
       H.script ! A.src "static/highlight/highlight.pack.js" $ ""
@@ -31,25 +31,25 @@ template title container =
 
 
 mainTemplate :: H.Html -> H.Html
-mainTemplate content = H.article ! A.class_ "content" $ content
+mainTemplate = H.article ! A.class_ "content"
 
-notFoundPage :: H.Html
-notFoundPage =
-  template "Not Found" $ mainTemplate $ do
+notFoundPage :: Config -> H.Html
+notFoundPage cfg =
+  template cfg "Not Found" $ mainTemplate $ do
     H.h1 "Not found"
     H.p "The page you search for is not available."
 
-logo :: H.Html
-logo = H.header ! A.class_ "logo" $ H.h1 $ H.a ! A.href "/" $ H.toHtml blogTitle
+logo :: Config -> H.Html
+logo cfg = H.header ! A.class_ "logo" $ H.h1 $ H.a ! A.href "/" $ H.toHtml (blogTitle cfg)
 
 footer :: H.Html
 footer = H.footer ! A.class_ "footer" $ do
     H.span "Powered by "
     H.a ! A.href "https://github.com/soupi/hablog" $ "Hablog"
 
-errorPage :: T.Text -> String -> H.Html
-errorPage ttl msg =
-  template ttl $ do
+errorPage :: Config -> T.Text -> String -> H.Html
+errorPage cfg ttl msg =
+  template cfg ttl $ do
     H.h2 "Something Went Wrong..."
     H.p $ H.toHtml msg
 
@@ -72,8 +72,8 @@ postsListItem post = H.li $ do
   H.span ! A.class_ "seperator" $ " - "
   H.a ! A.href (fromString $ T.unpack ("/" `T.append` Post.getPath post)) $ H.toHtml $ Post.title post
 
-postPage :: Post.Post -> H.Html
-postPage post = template (Post.title post) $
+postPage :: Config -> Post.Post -> H.Html
+postPage cfg post = template cfg (Post.title post) $
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
         H.a ! A.href (fromString $ T.unpack ("/" `T.append` Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.title post)
@@ -85,8 +85,8 @@ postPage post = template (Post.title post) $
           H.span ! A.class_ "postTags" $ tagsList (Post.tags post)
       H.div ! A.class_ "postContent" $ Post.content post
 
-pagePage :: Page.Page -> H.Html
-pagePage page = template (Page.getPageName page) $
+pagePage :: Config -> Page.Page -> H.Html
+pagePage cfg page = template cfg (Page.getPageName page) $
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $
         H.a ! A.href (fromString (Page.getPageURL page)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Page.getPageName page)
