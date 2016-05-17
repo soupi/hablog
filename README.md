@@ -1,7 +1,7 @@
 Hablog
 ======
 
-[![Hackage](https://img.shields.io/hackage/v/hablog.svg)](http://hackage.haskell.org/package/hablog)
+[![Hackage](https://img.shields.io/hackage/v/hablog.svg)](http://hackage.haskell.org/package/hablog) [![CircleCI](https://circleci.com/gh/soupi/hablog.svg?style=svg)](https://circleci.com/gh/soupi/hablog)
 
 A simple blog platform with tags. Made with Haskell and Scotty.
 
