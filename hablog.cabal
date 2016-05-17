@@ -3,6 +3,7 @@ Version:             0.4.0
 Synopsis:            A blog system
 Description:         blog system with tags
 License:             MIT
+license-file:        LICENSE
 Author:              Gil Mizrahi
 Maintainer:          soupiral@gmail.com
 Stability:           Experimental
@@ -22,7 +23,7 @@ source-repository head
 
 library
   Build-depends:
-    base
+    base >=4.7 && <5
    ,scotty
    ,scotty-tls >= 0.4
    ,blaze-html
@@ -67,9 +68,9 @@ library
   if impl(ghc >= 6.12.0)
     other-extensions:
       FlexibleInstances
-    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
+    ghc-options: -Wall -fwarn-tabs -funbox-strict-fields
   else
-    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
+    ghc-options: -Wall -fwarn-tabs -funbox-strict-fields
 
 Executable hablog
   hs-source-dirs: app
@@ -85,6 +86,6 @@ Executable hablog
   if impl(ghc >= 6.12.0)
     other-extensions:
       FlexibleInstances
-    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
+    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields
   else
-    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
+    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields
