@@ -1,6 +1,8 @@
 Hablog
 ======
 
+[![Hackage](https://img.shields.io/hackage/v/hablog.svg)](http://hackage.haskell.org/package/hablog)
+
 A simple blog platform with tags. Made with Haskell and Scotty.
 
 Hablog will read posts written in Markdown from the `_posts` folder.
