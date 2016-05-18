@@ -14,3 +14,6 @@ dependencies:
     - stack build
     - stack build --pedantic --haddock --no-haddock-deps
 
+test:
+  override:
+    - stack sdist
