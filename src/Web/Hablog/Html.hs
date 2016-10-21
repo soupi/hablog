@@ -14,28 +14,33 @@ import Web.Hablog.Config
 import qualified Web.Hablog.Post as Post
 import qualified Web.Hablog.Page as Page
 
-template :: Config -> T.Text -> H.Html -> H.Html
-template cfg title container =
+template :: Config -> Bool -> T.Text -> H.Html -> H.Html
+template cfg highlight title container =
   H.docTypeHtml $ do
     H.head $ do
       H.title (H.toHtml (T.concat [blogTitle cfg, " - ", title]))
       H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (bgTheme $ blogTheme cfg)
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (codeTheme $ blogTheme cfg)
+      if highlight
+        then H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (codeTheme $ blogTheme cfg)
+        else mempty
     H.body $ do
       H.div ! A.class_ "container" $ do
         logo cfg
         H.div ! A.class_ "maincontainer" $ container
         footer
-      H.script ! A.src "static/highlight/highlight.pack.js" $ ""
-      H.script "hljs.initHighlightingOnLoad();"
-
+      if highlight
+        then do
+          H.script ! A.src "static/highlight/highlight.pack.js" $ ""
+          H.script "hljs.initHighlightingOnLoad();"
+        else
+          mempty
 
 mainTemplate :: H.Html -> H.Html
 mainTemplate = H.article ! A.class_ "content"
 
 notFoundPage :: Config -> H.Html
 notFoundPage cfg =
-  template cfg "Not Found" $ mainTemplate $ do
+  template cfg False "Not Found" $ mainTemplate $ do
     H.h1 "Not found"
     H.p "The page you search for is not available."
 
@@ -49,7 +54,7 @@ footer = H.footer ! A.class_ "footer" $ do
 
 errorPage :: Config -> T.Text -> String -> H.Html
 errorPage cfg ttl msg =
-  template cfg ttl $ do
+  template cfg False ttl $ do
     H.h2 "Something Went Wrong..."
     H.p $ H.toHtml msg
 
@@ -73,7 +78,7 @@ postsListItem post = H.li $ do
   H.a ! A.href (fromString $ T.unpack ("/" `T.append` Post.getPath post)) $ H.toHtml $ Post.title post
 
 postPage :: Config -> Post.Post -> H.Html
-postPage cfg post = template cfg (Post.title post) $
+postPage cfg post = template cfg True (Post.title post) $
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
         H.a ! A.href (fromString $ T.unpack ("/" `T.append` Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.title post)
@@ -86,7 +91,7 @@ postPage cfg post = template cfg (Post.title post) $
       H.div ! A.class_ "postContent" $ Post.content post
 
 pagePage :: Config -> Page.Page -> H.Html
-pagePage cfg page = template cfg (Page.getPageName page) $
+pagePage cfg page = template cfg True (Page.getPageName page) $
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $
         H.a ! A.href (fromString (Page.getPageURL page)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Page.getPageName page)

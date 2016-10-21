@@ -55,3 +55,9 @@ darkTheme = Theme "/static/css/dark.css" "/static/highlight/styles/hybrid.css"
 lightTheme :: Theme
 lightTheme  = Theme "/static/css/light.css" "/static/highlight/styles/docco.css"
 
+
+themes :: [(String, Theme)]
+themes =
+  [("dark",  darkTheme)
+  ,("light", lightTheme)
+  ]

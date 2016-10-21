@@ -32,7 +32,7 @@ presentMain = do
   tgs <- liftIO getTagList
   auths <- liftIO getAuthorsList
   cfg <- getCfg
-  html $ HR.renderHtml $ template cfg "Posts" $ do
+  html $ HR.renderHtml $ template cfg False "Posts" $ do
     H.aside ! A.class_ "aside" $ do
       presentPagesList allPages
       H.div ! A.class_ "AllAuthorsList" $ do
@@ -47,7 +47,7 @@ showPostsWhere :: (Post.Post -> Bool) -> HablogAction ()
 showPostsWhere test = do
   cfg <- getCfg
   allPosts <- liftIO getAllPosts
-  html $ HR.renderHtml $ template cfg "Posts" $
+  html $ HR.renderHtml $ template cfg False "Posts" $
     postsListHtml $ filter test allPosts
 
 presentPagesList :: [Page.Page] -> H.Html
@@ -91,7 +91,7 @@ presentTags :: HablogAction ()
 presentTags = do
   cfg <- getCfg
   tags <- liftIO getTagList
-  html . HR.renderHtml $ template cfg "Posts Tags" tags
+  html . HR.renderHtml $ template cfg False "Posts Tags" tags
 
 getTagList :: IO H.Html
 getTagList = pure . tagsList . getAllTags =<< getAllPosts
@@ -107,19 +107,19 @@ presentTag :: T.Text -> HablogAction ()
 presentTag tag = do
   cfg <- getCfg
   posts <- liftIO getAllPosts
-  html . HR.renderHtml . template cfg tag $ postsListHtml $ filter (hasTag tag) posts
+  html . HR.renderHtml . template cfg False tag $ postsListHtml $ filter (hasTag tag) posts
 
 presentAuthors :: HablogAction ()
 presentAuthors = do
   cfg <- getCfg
   authors <- liftIO getAuthorsList
-  html . HR.renderHtml $ template cfg "Posts Authors" authors
+  html . HR.renderHtml $ template cfg False "Posts Authors" authors
 
 presentAuthor :: T.Text -> HablogAction ()
 presentAuthor auth = do
   cfg <- getCfg
   posts <- liftIO getAllPosts
-  html . HR.renderHtml . template cfg auth . postsListHtml $ filter (hasAuthor auth) posts
+  html . HR.renderHtml . template cfg False auth . postsListHtml $ filter (hasAuthor auth) posts
 
 getPageFromFile :: T.Text -> IO (Maybe Page.Page)
 getPageFromFile title = do

@@ -2,11 +2,11 @@
 
 html, body { height:98%; }
 body {
-	line-height: 1.4;
-	background:	repeat-x fixed 0% 0% #2F3233;
-	overflow-y:scroll;
-	font-family: 'Open Sans', Helvetica, tahoma, arial, sans-serif;
-  font-weight: 300;
+  line-height: 1.4;
+  background:  repeat-x fixed 0% 0% #2F3233;
+  overflow-y:scroll;
+  font-family: 'Open Sans', Helvetica, tahoma, arial, sans-serif;
+  font-weight: 400;
 }
 .logo a, .logo h1 {
   margin-left: 20px;
@@ -25,11 +25,17 @@ h3 { font-size: 24px; }
 h3, h4, h5, p, input, ul, li, .nav a
 {
 
-	font-family: 'Open Sans', Helvetica, arial, sans-serif;
+  font-family: 'Open Sans', Helvetica, arial, sans-serif;
   font-weight: 300;
+}
+li {
+  font-weight: 400;
 }
 a {
   font-weight: 400;
+}
+code {
+  font-size: 16px;
 }
 input
 {
@@ -53,20 +59,20 @@ input
 {
   max-width: 980px;
   min-width: 500px;
-	background: #272727;
-	margin: 15px auto;
-	padding: 20px;
-	overflow:hidden;
-	margin-bottom:10px;
+  background: #272727;
+  margin: 15px auto;
+  padding: 20px;
+  overflow:hidden;
+  margin-bottom:10px;
   color: white;
   min-height: 450px;
 }
 
 .header {
-	color: white;
-	margin: auto;
-	margin-bottom: 10px;
-	padding: 10px;
+  color: white;
+  margin: auto;
+  margin-bottom: 10px;
+  padding: 10px;
 }
 
 .logo {
@@ -85,7 +91,7 @@ input
   color: #888;
 }
 
-ul {	list-style: none; }
+ul {  list-style: none; }
 
 .nav a
 {
@@ -93,25 +99,25 @@ ul {	list-style: none; }
 }
 
 a:visited {
-	color: #79BAF2;
+  color: #79BAF2;
 }
 
 a {
-	color: #79BAF2;
-	text-decoration: none;
-	font-weight: normal;
+  color: #79BAF2;
+  text-decoration: none;
+  font-weight: normal;
 
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
 .current a {
     color: white;
 }
 a:hover {
-	color: white;
+  color: white;
 }
 
 .rounded-corners, .sidebar, .header, .container, .maincontainer, .content article {
@@ -121,16 +127,16 @@ a:hover {
 }
 
 .content {
-	padding-right: 30px;
-	padding-left: 10px;
-	padding-top: 20px;
-	overflow: hidden;
+  padding-right: 30px;
+  padding-left: 10px;
+  padding-top: 20px;
+  overflow: hidden;
 }
 
 .content p {
-	text-align: justify;
-	margin-top: 0px;
-	margin-left: 10px;
+  text-align: justify;
+  margin-top: 0px;
+  margin-left: 10px;
 }
 
 label {
@@ -139,11 +145,11 @@ label {
 
 .formdiv label
 {
-	display: block;
-	width: 200px;
+  display: block;
+  width: 200px;
   margin-bottom: 5px;
   font-size: 18px;
-	/* text-align: right; */
+  /* text-align: right; */
 }
 .formdiv input[type='text']
 {
@@ -157,7 +163,7 @@ label {
 .addformdiv label
 {
   display:block;
-	width: 200px;
+  width: 200px;
   margin-bottom: 5px;
   font-size: 18px;
 }
@@ -262,12 +268,12 @@ ul { padding-left: 0; }
   font-weight: normal;
   color: #fff;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
 }
 .postContent p, .postContent li
 {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 18px;
   color: #f0f0f0;
 

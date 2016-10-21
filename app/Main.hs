@@ -32,12 +32,20 @@ main =
               defaultConfig
         _ ->
           putStrLn usageMsgTLS
-    [portStr] ->
-      case reads portStr of
-        [(port, "")] ->
-          run defaultConfig port
-        _ ->
-          putStrLn usageMsg
+
+    [themeStr]
+      | Just theme <- lookup themeStr themes ->
+        run defaultConfig { blogTheme = theme } defaultPort
+
+    [portStr]
+      | [(port, "")] <- reads portStr ->
+        run defaultConfig port
+
+    [themeStr,portStr]
+      | Just theme <- lookup themeStr themes
+      , [(port, "")] <- reads portStr ->
+        run defaultConfig { blogTheme = theme } port
+
     _ ->
       putStrLn usageMsg
 
