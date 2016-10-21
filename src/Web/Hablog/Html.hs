@@ -19,9 +19,9 @@ template cfg highlight title container =
   H.docTypeHtml $ do
     H.head $ do
       H.title (H.toHtml (T.concat [blogTitle cfg, " - ", title]))
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (bgTheme $ blogTheme cfg)
+      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (H.stringValue . bgTheme $ blogTheme cfg)
       if highlight
-        then H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (codeTheme $ blogTheme cfg)
+        then H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (H.stringValue . codeTheme $ blogTheme cfg)
         else mempty
     H.body $ do
       H.div ! A.class_ "container" $ do

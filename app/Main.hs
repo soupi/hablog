@@ -7,14 +7,15 @@ module Main where
 import Control.Monad (void)
 import Control.Concurrent (forkIO)
 import Data.List (intercalate)
+import Data.Text.Lazy (pack, unpack)
 import Options.Applicative
 import Web.Hablog
 
 main :: IO ()
 main = do
   args <- execParser paramsParserInfo
-  let cfg = defaultConfig { blogTheme = pTheme args }
-  case pCfg args of
+  let cfg = pCfg args
+  case pCmd args of
     HTTP port ->
       run cfg port
     HTTPS tlsCfg ->
@@ -23,37 +24,54 @@ main = do
       void $ forkIO $ run cfg port
       runTLS tlsCfg cfg
 
+
 --------------------
 -- Options Parser
 --------------------
 
 data Params = Params
-  { pTheme :: Theme
-  , pCfg :: Command
+  { pCfg :: Config
+  , pCmd :: Command
   }
-  deriving Show
+  deriving (Show, Read)
 
 data Command
   = HTTP Int
   | HTTPS TLSConfig
   | Both Int TLSConfig
-  deriving Show
+  deriving (Show, Read)
 
 paramsParserInfo :: ParserInfo Params
 paramsParserInfo =
-  info (helper <*> (Params <$> fmap snd thm <*> cmd)) $
+  info (helper <*> (Params <$> config <*> cmd)) $
      fullDesc
   <> header   "Hablog - A blogging System"
+
+config :: Parser Config
+config = Config
+  <$> fmap pack ttl
+  <*> fmap snd thm
+  where
+    ttl =
+      strOption
+        (long "title"
+         <> short 't'
+         <> metavar "NAME"
+         <> help "Title for the blog"
+         <> showDefault
+         <> value (unpack defaultTitle)
+        )
+
 
 thm :: Parser (String, Theme)
 thm =
   option (str >>= readTheme)
   (long "theme"
-   <> short 't'
+   <> short 'T'
    <> metavar "THEME"
    <> help "Select a blog theme"
    <> showDefaultWith fst
-   <> value ("dark", darkTheme)
+   <> value defaultTheme
   )
 
 readTheme :: String -> ReadM (String, Theme)
@@ -92,3 +110,12 @@ tlsConfig = TLSConfig
   <$> option auto (long "tls-port" <> short 'P' <> metavar "PORT" <> help "Port for TLS" <> showDefault <> value 443)
   <*> strOption (long "tls-key"  <> short 'k' <> metavar "KEY"  <> help "Key file for for TLS")
   <*> strOption (long "tls-cert" <> short 'c' <> metavar "CERT" <> help "Cert file for for TLS")
+
+fromFile :: Parser FilePath
+fromFile =
+  strOption
+  (long "file"
+   <> short 'f'
+   <> metavar "FILE"
+   <> help "Path to configuration file"
+  )

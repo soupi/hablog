@@ -78,6 +78,7 @@ Executable hablog
 
   Build-depends:
      base
+    ,text
     ,optparse-applicative
     ,hablog
 
