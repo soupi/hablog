@@ -229,13 +229,13 @@ table {
 }
 .postDate
 {
-  font-size: 12px;
+  font-size: 14px;
 }
 .postTags li
 {
   list-style-type: none;
   display: inline;
-  font-size: 12px;
+  font-size: 14px;
   margin-right: 8px;
 }
 .postContent { margin-left: 70px; margin-right: 70px; }
@@ -255,8 +255,8 @@ ul { padding-left: 0; }
 .postContent h2 { font-size: 24px; }
 .postContent h3 { font-size: 20px; }
 .postContent h4 { font-size: 17px; }
-.postContent h5 { font-size: 14px; }
-.postContent h6 { font-size: 12px; }
+.postContent h5 { font-size: 16px; }
+.postContent h6 { font-size: 16px; }
 
 .postContent h1, .postContent h2, .postContent h3, .postContent h4, .postContent h5, .postContent h6
 {

@@ -13,11 +13,15 @@ data Theme = Theme
   , codeTheme :: AttributeValue -- ^ Theme for code. a file path for a highlight.js css file
   }
 
+instance Show Theme where
+  show _ = "<Theme>"
+
 -- | Configuration for Hablog
 data Config = Config
   { blogTitle :: Text
   , blogTheme :: Theme
   }
+  deriving Show
 
 -- | Requires the needed values for runTLS
 data TLSConfig = TLSConfig
@@ -25,6 +29,7 @@ data TLSConfig = TLSConfig
   , blogCert    :: FilePath
   , blogKey     :: FilePath
   }
+  deriving Show
 
 -- | A default configuration
 defaultConfig :: Config

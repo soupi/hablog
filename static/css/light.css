@@ -220,14 +220,14 @@ table {
 }
 .postDate
 {
-  font-size: 13px;
+  font-size: 14px;
   color: #555;
 }
 .postTags li
 {
   list-style-type: none;
   display: inline;
-  font-size: 13px;
+  font-size: 14px;
   margin-right: 8px;
 }
 .postContent
