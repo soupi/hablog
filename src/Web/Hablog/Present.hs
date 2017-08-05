@@ -10,6 +10,7 @@ import qualified Data.List as L
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.Encoding as T
 import qualified Data.ByteString.Lazy as BSL
+import qualified Data.ByteString.Lazy.Char8 as BSLC
 
 import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Text.Blaze.Html5 as H
@@ -18,12 +19,14 @@ import           Text.Blaze.Html5 ((!))
 
 import qualified System.Directory as DIR (getDirectoryContents)
 import           System.IO.Error (catchIOError)
+import qualified Text.RSS as RSS
 
 import Web.Hablog.Html
 import Web.Hablog.Types
 import Web.Hablog.Config
 import qualified Web.Hablog.Post as Post
 import qualified Web.Hablog.Page  as Page
+import Network.URI (URI)
 
 presentMain :: HablogAction ()
 presentMain = do
@@ -42,6 +45,20 @@ presentMain = do
         H.h1 "Tags"
         tgs
     postsListHtml allPosts
+
+presentRSS :: URI -> HablogAction ()
+presentRSS domain = do
+  cfg <- getCfg
+  allPosts <- liftIO getAllPosts
+  let mime = "application/rss+xml"
+  setHeader "content-type" mime
+  raw
+    . BSLC.pack
+    . RSS.showXML
+    . RSS.rssToXML
+    . RSS.RSS (T.unpack $ blogTitle cfg) domain "" []
+    . map (Post.toRSS $ blogDomain cfg)
+    $ allPosts
 
 showPostsWhere :: (Post.Post -> Bool) -> HablogAction ()
 showPostsWhere test = do

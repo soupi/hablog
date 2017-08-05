@@ -49,6 +49,7 @@ logo cfg = H.header ! A.class_ "logo" $ H.h1 $ H.a ! A.href "/" $ H.toHtml (blog
 
 footer :: H.Html
 footer = H.footer ! A.class_ "footer" $ do
+    H.div $ H.a ! A.href "/rss" $ "RSS feed"
     H.span "Powered by "
     H.a ! A.href "https://github.com/soupi/hablog" $ "Hablog"
 

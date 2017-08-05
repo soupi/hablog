@@ -1,10 +1,12 @@
-resolver: lts-7.0
+resolver: lts-9.0
 
 packages:
 - '.'
 
 extra-deps:
 - scotty-tls-0.4.1
+- rss-3000.2.0.6
+- HaXml-1.25.3
 
 flags: {}
 

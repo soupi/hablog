@@ -1,5 +1,5 @@
 Name:                hablog
-Version:             0.5.1
+Version:             0.6.0
 Synopsis:            A blog system
 Description:         blog system with tags
 License:             MIT
@@ -12,7 +12,7 @@ Build-type:          Simple
 
 Cabal-version:       >=1.10
 
-tested-with: GHC==7.10
+tested-with: GHC==8.0.2
 
 extra-source-files:
   README.md
@@ -39,6 +39,9 @@ library
    ,filepath
    ,mime-types
    ,containers
+   ,rss
+   ,time
+   ,network-uri
 
   exposed-modules:
     Web.Hablog

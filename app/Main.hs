@@ -6,6 +6,7 @@ module Main where
 
 import Control.Monad (void)
 import Control.Concurrent (forkIO)
+import Data.Monoid ((<>))
 import Data.List (intercalate)
 import Data.Text.Lazy (pack, unpack)
 import Options.Applicative
@@ -51,6 +52,7 @@ config :: Parser Config
 config = Config
   <$> fmap pack ttl
   <*> fmap snd thm
+  <*> fmap pack domain
   where
     ttl =
       strOption
@@ -60,6 +62,15 @@ config = Config
          <> help "Title for the blog"
          <> showDefault
          <> value (unpack defaultTitle)
+        )
+    domain =
+      strOption
+        (long "domain"
+         <> short 'd'
+         <> metavar "NAME"
+         <> help "Website domain"
+         <> showDefault
+         <> value (unpack defaultDomain)
         )
 
 

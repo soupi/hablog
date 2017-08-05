@@ -15,8 +15,9 @@ data Theme = Theme
 
 -- | Configuration for Hablog
 data Config = Config
-  { blogTitle :: Text
-  , blogTheme :: Theme
+  { blogTitle  :: Text
+  , blogTheme  :: Theme
+  , blogDomain :: Text
   }
   deriving (Show, Read)
 
@@ -33,11 +34,15 @@ defaultConfig :: Config
 defaultConfig = Config
   { blogTitle = defaultTitle
   , blogTheme = snd defaultTheme
+  , blogDomain = defaultDomain
   }
 
 -- | "Hablog"
 defaultTitle :: Text
 defaultTitle = "Hablog"
+
+defaultDomain :: Text
+defaultDomain = "localhost"
 
 -- | The default HTTP port is 80
 defaultPort :: Int

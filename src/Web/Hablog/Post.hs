@@ -2,9 +2,14 @@
 
 module Web.Hablog.Post where
 
+import           Data.Monoid ((<>))
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Map as M
+import qualified Text.RSS as RSS
+import           Data.Time (fromGregorian, Day, UTCTime(..), secondsToDiffTime)
+import           Network.URI (parseURI)
+import qualified Text.Blaze.Html.Renderer.Text as HR
 
 import Web.Hablog.Utils
 
@@ -23,6 +28,12 @@ year, month, day :: Post -> T.Text
 year  p = case date p of { (y, _, _) -> y; }
 month p = case date p of { (_, m, _) -> m; }
 day   p = case date p of { (_, _, d) -> d; }
+
+toDay :: Post -> Maybe Day
+toDay post =
+  case (reads $ T.unpack $ year post, reads $ T.unpack $ month post, reads $ T.unpack $ day post) of
+    ([(y,[])], [(m,[])], [(d,[])]) -> pure (fromGregorian y m d)
+    _ -> Nothing
 
 toPost :: T.Text -> Maybe Post
 toPost fileContent =
@@ -73,4 +84,23 @@ instance Ord Post where
     | year p1 == year p2 && month p1 == month p2 && day p1 < day p2 = LT
     | year p1 == year p2 && month p1 == month p2 && day p1 == day p2 = EQ
     | otherwise = GT
+
+
+toRSS :: T.Text -> Post -> RSS.Item
+toRSS domain post =
+  [ RSS.Title (T.unpack $ title post)
+  ] ++ map (RSS.Author . T.unpack) (authors post)
+    ++ map (RSS.Category Nothing . T.unpack) (tags post)
+    ++ [ RSS.PubDate $ UTCTime d (secondsToDiffTime 0)
+       | Just d <- [toDay post]
+       ]
+    ++ [ RSS.Link r
+       | Just r <- (:[]) $ parseURI $
+           T.unpack (domain <> "/" <> getPath post)
+       ]
+    ++ [ RSS.Description
+       . T.unpack
+       $ HR.renderHtml (content post)
+       ]
+
 

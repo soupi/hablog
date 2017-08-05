@@ -4,6 +4,7 @@
 
 module Web.Hablog.Run where
 
+import           Data.Monoid
 import           Web.Scotty.Trans
 import           Web.Scotty.TLS (scottyTTLS)
 import           Control.Monad.Trans.Reader (runReaderT)
@@ -12,6 +13,9 @@ import qualified Data.Text.Encoding as T
 import qualified Data.Text.Lazy as TL
 import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Network.Mime as Mime (defaultMimeLookup)
+import Network.URI (URI, parseURI)
+import Control.Monad
+import Data.Maybe
 
 import Web.Hablog.Types
 import Web.Hablog.Config
@@ -23,17 +27,29 @@ import Web.Hablog.Post (eqY, eqYM, eqDate)
 -- | Run Hablog on HTTP
 run :: Config -> Int -> IO ()
 run cfg port =
-  scottyT port (`runReaderT` cfg) router
+  scottyT port (`runReaderT` cfg') (router $! domain)
+  where
+    cfg' = cfg
+      { blogDomain = "http://" <> blogDomain cfg <> ":" <> portStr }
+    portStr = if port == 80 then "" else TL.pack (show port)
+    domain = parseURI (TL.unpack $ blogDomain cfg')
 
 -- | Run Hablog on HTTPS
 runTLS :: TLSConfig -> Config -> IO ()
 runTLS tlsCfg cfg =
-  scottyTTLS (blogTLSPort tlsCfg) (blogKey tlsCfg) (blogCert tlsCfg) (`runReaderT` cfg) router
+  scottyTTLS (blogTLSPort tlsCfg) (blogKey tlsCfg) (blogCert tlsCfg) (`runReaderT` cfg') (router $! domain)
+  where
+    cfg' = cfg
+      { blogDomain = "https://" <> blogDomain cfg <> ":" <> portStr }
+    portStr = if blogTLSPort tlsCfg == 443 then "" else TL.pack (show (blogTLSPort tlsCfg))
+    domain = parseURI (TL.unpack $ blogDomain cfg')
 
 -- | Hablog's router
-router :: Hablog ()
-router = do
+router :: Maybe URI -> Hablog ()
+router domain = do
   get "/" presentMain
+  when (isJust domain)
+    $ get "/rss" (presentRSS $ fromJust domain)
   get "/post/:yyyy/:mm/:dd/:title" $ do
     (yyyy, mm, dd) <- getDate
     title <- param "title"
