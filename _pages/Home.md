@@ -1,10 +1,7 @@
-route: about
-title: About
+route: home
+title: Home
 
 ---
-
-Hablog
-======
 
 A simple static blog platform with tags. Made with Haskell and Scotty.
 
@@ -53,8 +50,13 @@ tags: <tags for the post, separated, by, commas>
 
 ```markdown
 title: <the title of the page>
+route: <the route of the page>
 
 ---
 
 <The rest of the post in Markdown format>
 ```
+
+## Home page
+
+The front page will either be `Home` or, if that isn't available, the blog page will be the front page.

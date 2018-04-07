@@ -5,14 +5,14 @@ Description:         blog system with tags
 License:             MIT
 license-file:        LICENSE
 Author:              Gil Mizrahi
-Maintainer:          soupiral@gmail.com
+Maintainer:          gilmi@posteo.net
 Stability:           Experimental
 Category:            Web
 Build-type:          Simple
 
 Cabal-version:       >=1.10
 
-tested-with: GHC==8.0.2
+tested-with: GHC==8.2.2
 
 extra-source-files:
   README.md

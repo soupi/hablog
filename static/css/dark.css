@@ -302,3 +302,30 @@ code {
   padding-left: 2px;
   padding-right: 2px;
 }
+
+nav {
+    margin: auto;
+    width: 300px;
+}
+
+nav li:after {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    content: "|";
+    color: #666;
+}
+
+nav li:last-child:after {
+    margin-left: 0rem;
+    content: "";
+}
+
+nav li {
+    display: inline-block;
+    font-size: 1.3rem;
+}
+
+.pageHeader {
+    margin-left: 70px;
+    margin-bottom: 30px;
+}
