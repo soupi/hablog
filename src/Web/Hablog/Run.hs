@@ -4,7 +4,6 @@
 
 module Web.Hablog.Run where
 
-import           Data.Monoid
 import           Web.Scotty.Trans
 import           Web.Scotty.TLS (scottyTTLS)
 import           Control.Monad.Trans.Reader (runReaderT)
@@ -15,7 +14,11 @@ import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Network.Mime as Mime (defaultMimeLookup)
 import Network.URI (URI, parseURI)
 import Control.Monad
+import Control.Monad.Trans
 import Data.Maybe
+import Data.Time
+import Data.List (isPrefixOf)
+import System.Directory
 
 import Web.Hablog.Types
 import Web.Hablog.Config
@@ -47,9 +50,12 @@ runTLS tlsCfg cfg =
 -- | Hablog's router
 router :: Maybe URI -> Hablog ()
 router domain = do
-  get "/" presentHome
-
-  get "/blog" presentBlog
+  get ("/favicon.ico") $ do
+    let
+      path = "static/favicon.ico"
+      mime = Mime.defaultMimeLookup (T.pack path)
+    setHeader "content-type" $ TL.fromStrict (T.decodeUtf8 mime)
+    file path
 
   get (regex "/static/(.*)") $ do
     path <- fmap (drop 1 . T.unpack) (param "0")
@@ -59,6 +65,40 @@ router domain = do
         let mime = Mime.defaultMimeLookup (T.pack path)
         setHeader "content-type" $ TL.fromStrict (T.decodeUtf8 mime)
         file path
+
+  get (regex "(.*)") $ do
+    path <- fmap (drop 1 . T.unpack) (param "0")
+    when ("apple" `isPrefixOf` path) $ next
+    agent <- header "User-Agent"
+    liftIO $ do
+      hablogDir <- (<> "/.hablog") <$> getHomeDirectory
+      createDirectoryIfMissing False hablogDir
+      time <- getCurrentTime
+      let
+        date = formatTime defaultTimeLocale  "%F" time
+        datetime = formatTime defaultTimeLocale  "%F %T" time
+        replaceChar from to char
+          | char == from = to
+          | otherwise = char
+        entry = concat
+          [ "\""
+          , map (replaceChar '\"' '_' . replaceChar ',' '_') path
+          , "\" , "
+          , date
+          , " , "
+          , datetime
+          , " , "
+          , "\""
+          , maybe "" TL.unpack agent
+          , "\""
+          , "\n"
+          ]
+      appendFile (hablogDir <> "/visits.csv") entry
+    next
+
+  get "/" presentHome
+
+  get "/blog" presentBlog
 
   route domain
 
