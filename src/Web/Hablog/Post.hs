@@ -2,7 +2,6 @@
 
 module Web.Hablog.Post where
 
-import           Data.Monoid ((<>))
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Map as M

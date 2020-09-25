@@ -1,5 +1,5 @@
 Name:                hablog
-Version:             0.6.0
+Version:             0.7.0
 Synopsis:            A blog system
 Description:         blog system with tags
 License:             MIT
@@ -12,14 +12,14 @@ Build-type:          Simple
 
 Cabal-version:       >=1.10
 
-tested-with: GHC==8.2.2
+tested-with: GHC==8.8.4
 
 extra-source-files:
   README.md
 
 source-repository head
   type: git
-  location: https://github.com/soupi/hablog
+  location: https://gitlab.com/gilmi/hablog
 
 library
   Build-depends:

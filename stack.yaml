@@ -1,4 +1,4 @@
-resolver: lts-13.13
+resolver: lts-16.15
 
 packages:
 - '.'
@@ -11,9 +11,3 @@ extra-deps:
 flags: {}
 
 extra-package-dbs: []
-
-# Control whether we use the GHC we find on the path
-# system-ghc: true
-
-# Allow a newer minor version of GHC than the snapshot specifies
-compiler-check: newer-minor

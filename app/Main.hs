@@ -6,7 +6,6 @@ module Main where
 
 import Control.Monad (void)
 import Control.Concurrent (forkIO)
-import Data.Monoid ((<>))
 import Data.List (intercalate)
 import Data.Text.Lazy (pack, unpack)
 import Options.Applicative
