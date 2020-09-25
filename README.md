@@ -24,6 +24,22 @@ stack build
 ```
 
 
+Running
+=======
+
+```
+hablog --title <TITLE> --theme <THEME> --domain <DOMAIN> <COMMAND> [--port <PORT> --tls-cert <TLS_CERT> --tls-port <TLS_PORT>]
+```
+
+- `<TITLE>` is the title you want in the HTML headers;
+- `<THEME>` is `light` or `dark`, depending on the theme you want, to create your own themes look at the examples in [/static/css](https://github.com/soupi/hablog/tree/master/static/css);
+- `<DOMAIN>` is the domain you're running the blog on;
+- `<COMMAND>` is `http`, `https`, or `both`;
+- `<PORT>` is the `http` port (not required if `COMMAND` is `https`);
+- `<TLS_CERT>` is the `https` certificate (not required if `COMMAND` is `http`);
+- `<TLS_PORT>` is the `https` port (not required if `COMMAND` is `http`).
+
+
 How to write a new post?
 ========================
 
