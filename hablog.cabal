@@ -26,6 +26,7 @@ library
     base >=4.7 && <5
    ,scotty
    ,scotty-tls >= 0.4
+   ,warp-tls == 3.2.12
    ,blaze-html
    ,blaze-markup
    ,text
@@ -91,6 +92,6 @@ Executable hablog
   if impl(ghc >= 6.12.0)
     other-extensions:
       FlexibleInstances
-    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields
+    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -static -optl-static -optl-pthread -fPIC
   else
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields

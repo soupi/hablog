@@ -333,3 +333,6 @@ nav li {
 .pages {
   text-align: center;
 }
+.main-content { display: flex; flex-wrap: wrap; }
+.PostsList { min-width: 480px; margin-right: 1rem; margin-left: 1rem; flex: auto; }
+.logo { color: #eef; }
