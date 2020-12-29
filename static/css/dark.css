@@ -283,6 +283,7 @@ ul { padding-left: 0; }
 {
   display: block;
   margin: auto;
+  max-width: 95%;
 }
 
 .postContent ul
