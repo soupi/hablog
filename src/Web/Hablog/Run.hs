@@ -14,11 +14,7 @@ import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Network.Mime as Mime (defaultMimeLookup)
 import Network.URI (URI, parseURI)
 import Control.Monad
-import Control.Monad.Trans
 import Data.Maybe
-import Data.Time
-import Data.List (isPrefixOf)
-import System.Directory
 
 import Web.Hablog.Types
 import Web.Hablog.Config
@@ -26,26 +22,19 @@ import Web.Hablog.Present
 import Web.Hablog.Html (errorPage)
 import Web.Hablog.Post (eqY, eqYM, eqDate)
 
-
 -- | Run Hablog on HTTP
 run :: Config -> Int -> IO ()
 run cfg port =
-  scottyT port (`runReaderT` cfg') (router $! domain)
+  scottyT port (`runReaderT` cfg) (router $! domain)
   where
-    cfg' = cfg
-      { blogDomain = "http://" <> blogDomain cfg <> ":" <> portStr }
-    portStr = if port == 80 then "" else TL.pack (show port)
-    domain = parseURI (TL.unpack $ blogDomain cfg')
+    domain = parseURI (TL.unpack $ blogDomain cfg)
 
 -- | Run Hablog on HTTPS
 runTLS :: TLSConfig -> Config -> IO ()
 runTLS tlsCfg cfg =
-  scottyTTLS (blogTLSPort tlsCfg) (blogKey tlsCfg) (blogCert tlsCfg) (`runReaderT` cfg') (router $! domain)
+  scottyTTLS (blogTLSPort tlsCfg) (blogKey tlsCfg) (blogCert tlsCfg) (`runReaderT` cfg) (router $! domain)
   where
-    cfg' = cfg
-      { blogDomain = "https://" <> blogDomain cfg <> ":" <> portStr }
-    portStr = if blogTLSPort tlsCfg == 443 then "" else TL.pack (show (blogTLSPort tlsCfg))
-    domain = parseURI (TL.unpack $ blogDomain cfg')
+    domain = parseURI (TL.unpack $ blogDomain cfg)
 
 -- | Hablog's router
 router :: Maybe URI -> Hablog ()
@@ -65,36 +54,6 @@ router domain = do
         let mime = Mime.defaultMimeLookup (T.pack path)
         setHeader "content-type" $ TL.fromStrict (T.decodeUtf8 mime)
         file path
-
-  get (regex "(.*)") $ do
-    path <- fmap (drop 1 . T.unpack) (param "0")
-    when ("apple" `isPrefixOf` path) $ next
-    agent <- header "User-Agent"
-    liftIO $ do
-      hablogDir <- (<> "/.hablog") <$> getHomeDirectory
-      createDirectoryIfMissing False hablogDir
-      time <- getCurrentTime
-      let
-        date = formatTime defaultTimeLocale  "%F" time
-        datetime = formatTime defaultTimeLocale  "%F %T" time
-        replaceChar from to char
-          | char == from = to
-          | otherwise = char
-        entry = concat
-          [ "\""
-          , map (replaceChar '\"' '_' . replaceChar ',' '_') path
-          , "\" , "
-          , date
-          , " , "
-          , datetime
-          , " , "
-          , "\""
-          , maybe "" TL.unpack agent
-          , "\""
-          , "\n"
-          ]
-      appendFile (hablogDir <> "/visits.csv") entry
-    next
 
   get "/" presentHome
 

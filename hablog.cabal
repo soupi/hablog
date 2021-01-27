@@ -1,5 +1,5 @@
 Name:                hablog
-Version:             0.7.1
+Version:             0.8.0
 Synopsis:            A blog system
 Description:         blog system with tags
 License:             MIT
@@ -11,8 +11,6 @@ Category:            Web
 Build-type:          Simple
 
 Cabal-version:       >=1.10
-
-tested-with: GHC==8.8.4
 
 extra-source-files:
   README.md
@@ -93,5 +91,6 @@ Executable hablog
     other-extensions:
       FlexibleInstances
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -static -optl-static -optl-pthread -fPIC
+    -- ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields
   else
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields
