@@ -1,8 +1,8 @@
 resolver: lts-16.15
 
-docker:
-  enable: true
-  image: utdemir/ghc-musl:v16-ghc884
+# docker:
+#   enable: true
+#   image: utdemir/ghc-musl:v16-ghc884
 
 packages:
 - '.'
