@@ -12,6 +12,14 @@ import qualified Text.Blaze.Html.Renderer.Text as HR
 
 import Web.Hablog.Utils
 
+data Preview
+  = Preview
+    { previewTitle :: Maybe T.Text
+    , previewSummary :: Maybe T.Text
+    , previewImage :: Maybe (FilePath, T.Text)
+    , previewAuthor :: Maybe T.Text
+    , previewSite :: Maybe T.Text
+    }
 
 data Post
   = Post
@@ -20,6 +28,7 @@ data Post
   , title :: T.Text
   , authors :: [T.Text]
   , tags    :: [T.Text]
+  , preview :: Preview
   , content :: H.Html
   }
 
@@ -41,6 +50,7 @@ toPost fileContent =
        <*> M.lookup "title" header
        <*> (map (T.unwords . T.words) . T.split (==',') <$> M.lookup "authors" header)
        <*> (map (T.toLower . T.unwords . T.words) . T.split (==',') <$> M.lookup "tags" header)
+       <*> pure preview'
        <*> pure (createBody $ getContent fileContent)
     where
         header = getHeader fileContent
@@ -48,6 +58,22 @@ toPost fileContent =
         yyyy   = dt >>= (`at` 0)
         mm     = dt >>= (`at` 1)
         dd     = dt >>= (`at` 2)
+        preview' = mkPreview header
+
+noPreview :: Preview
+noPreview = Preview mempty mempty mempty mempty mempty
+
+mkPreview :: M.Map T.Text T.Text -> Preview
+mkPreview header =
+  Preview
+    (M.lookup "title" header)
+    (M.lookup "summary" header)
+    ( (,)
+      <$> fmap T.unpack (M.lookup "image" header)
+      <*> M.lookup "image-alt" header
+    )
+    (M.lookup "authors" header)
+    (M.lookup "twitter_handle" header)
 
 getPath :: Post -> T.Text
 getPath post =

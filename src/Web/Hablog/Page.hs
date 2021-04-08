@@ -8,11 +8,13 @@ import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 
 import Web.Hablog.Utils
+import Web.Hablog.Post
 
 data Page
     = Page
     { getPageURL     :: FilePath
     , getPageName    :: T.Text
+    , getPagePreview :: Preview
     , getPageContent :: H.Html
     }
 
@@ -20,8 +22,9 @@ toPage :: T.Text -> Maybe Page
 toPage fileContent =
   Page <$> fmap T.unpack (M.lookup "route" header)
        <*> M.lookup "title" header
-       <*> pure (createBody content)
-    where (header, content) = (getHeader &&& getContent) fileContent
+       <*> pure (mkPreview header)
+       <*> pure (createBody content')
+    where (header, content') = (getHeader &&& getContent) fileContent
 
 
 instance Show Page where

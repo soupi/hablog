@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Web.Hablog.Html where
@@ -14,12 +15,16 @@ import Web.Hablog.Config
 import qualified Web.Hablog.Post as Post
 import qualified Web.Hablog.Page as Page
 
-template :: Config -> Bool -> T.Text -> String -> H.Html -> H.Html
-template cfg highlight title pageRoute container =
+template :: Config -> Post.Preview -> Bool -> T.Text -> String -> H.Html -> H.Html
+template cfg preview highlight title' pageRoute container = do
+  let
+    title = T.concat [blogTitle cfg, " - ", title']
   H.docTypeHtml $ do
     H.head $ do
       H.title (H.toHtml (T.concat [blogTitle cfg, " - ", title]))
+      H.meta ! A.charset "utf-8"
       H.meta ! A.content "width=650" ! A.name "viewport"
+      addPreview (preview { Post.previewTitle = Just title })
       H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (H.stringValue . bgTheme $ blogTheme cfg)
       if highlight
         then H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href (H.stringValue . codeTheme $ blogTheme cfg)
@@ -36,12 +41,30 @@ template cfg highlight title pageRoute container =
         else
           mempty
 
+addPreview :: Post.Preview -> H.Html
+addPreview Post.Preview{..} = do
+  mymeta "description" previewTitle
+  mymeta "author" previewAuthor
+  mymeta "twitter:card" (Just "summary")
+  mymeta "twitter:site" previewSite
+  mymeta "twitter:title" previewTitle
+  mymeta "twitter:description" previewSummary
+  mymeta "twitter:image" (T.pack . fst <$> previewImage)
+  mymeta "twitter:image-alt" (snd <$> previewImage)
+
+  where
+    mymeta name mcontent =
+      case mcontent of
+        Nothing -> pure ()
+        Just content ->
+          H.meta ! A.name name ! A.content (H.textValue $ T.toStrict content)
+
 mainTemplate :: H.Html -> H.Html
 mainTemplate = H.article ! A.class_ "content"
 
 notFoundPage :: Config -> H.Html
 notFoundPage cfg =
-  template cfg False "Not Found" "notfound" $ mainTemplate $ do
+  template cfg Post.noPreview False "Not Found" "notfound" $ mainTemplate $ do
     H.h1 "Not found"
     H.p "The page you search for is not available."
 
@@ -58,7 +81,7 @@ footer = H.footer ! A.class_ "footer" $ do
 
 errorPage :: Config -> T.Text -> String -> H.Html
 errorPage cfg ttl msg =
-  template cfg False ttl "" $ do
+  template cfg Post.noPreview False ttl "" $ do
     H.h2 "Something Went Wrong..."
     H.p $ H.toHtml msg
 
@@ -82,7 +105,7 @@ postsListItem post = H.li $ do
   H.a ! A.href (fromString $ T.unpack ("/blog/" `T.append` Post.getPath post)) $ H.toHtml $ Post.title post
 
 postPage :: Config -> Post.Post -> H.Html
-postPage cfg post = template cfg True (Post.title post) "blog" $
+postPage cfg post = template cfg (Post.preview post) True (Post.title post) "blog" $
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
         H.a ! A.href (fromString $ T.unpack ("/blog/" `T.append` Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.title post)
@@ -95,7 +118,14 @@ postPage cfg post = template cfg True (Post.title post) "blog" $
       H.div ! A.class_ "postContent" $ Post.content post
 
 pagePage :: Config -> Page.Page -> H.Html
-pagePage cfg page = template cfg True (Page.getPageName page) (Page.getPageURL page) $ pageContent page
+pagePage cfg page =
+  template
+    cfg
+    (Page.getPagePreview page)
+    True
+    (Page.getPageName page)
+    (Page.getPageURL page)
+    (pageContent page)
 
 pageContent :: Page.Page -> H.Html
 pageContent page = do

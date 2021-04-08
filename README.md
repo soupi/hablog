@@ -72,3 +72,10 @@ route: <route to the page>
 <The rest of the page in Markdown format>
 ```
 
+## Preview
+
+If you want twitter/other previews to work as well, add the following definition at the header of a post or page. Not that `image` without `image-alt` won't work.
+
+- `summary` - For a summary of the post/page
+- `image` - A link to an image
+- `image-alt` - Alternative description for an image

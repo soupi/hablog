@@ -36,7 +36,7 @@ presentHome = do
   case L.find (\p -> Page.getPageURL p == "home") allPages of
     Nothing -> presentBlog
     Just homePage -> do
-      html $ HR.renderHtml $ template cfg False "home" "home" $ do
+      html $ HR.renderHtml $ template cfg (Page.getPagePreview homePage) False "home" "home" $ do
         H.nav ! A.class_ "menu" $ do
           H.ul ! A.class_ "pages" $ do
             pagesList allPages
@@ -52,7 +52,7 @@ presentBlog = do
   tgs <- liftIO getTagList
   auths <- liftIO getAuthorsList
   cfg <- getCfg
-  html $ HR.renderHtml $ template cfg False "Blog" "blog" $ do
+  html $ HR.renderHtml $ template cfg Post.noPreview False "Blog" "blog" $ do
     H.nav ! A.class_ "menu" $ do
       H.ul ! A.class_ "pages" $ do
         pagesList allPages
@@ -85,7 +85,7 @@ showPostsWhere :: (Post.Post -> Bool) -> HablogAction ()
 showPostsWhere test = do
   cfg <- getCfg
   allPosts <- liftIO getAllPosts
-  html $ HR.renderHtml $ template cfg False "Posts" "blog" $
+  html $ HR.renderHtml $ template cfg Post.noPreview False "Posts" "blog" $
     postsListHtml $ filter test allPosts
 
 presentPage :: T.Text -> HablogAction ()
@@ -95,7 +95,7 @@ presentPage route = do
 
 presentPage' :: [Page.Page] -> Config -> Page.Page -> H.Html
 presentPage' pages cfg page = do
-  template cfg False (Page.getPageName page) (Page.getPageURL page) $ do
+  template cfg (Page.getPagePreview page) False (Page.getPageName page) (Page.getPageURL page) $ do
     H.nav ! A.class_ "menu" $ do
       H.ul ! A.class_ "pages" $ do
         pagesList pages
@@ -134,7 +134,7 @@ presentTags :: HablogAction ()
 presentTags = do
   cfg <- getCfg
   tags <- liftIO getTagList
-  html . HR.renderHtml $ template cfg False "Posts Tags" "blog" tags
+  html . HR.renderHtml $ template cfg Post.noPreview False "Posts Tags" "blog" tags
 
 getTagList :: IO H.Html
 getTagList = pure . tagsList . getAllTags =<< getAllPosts
@@ -150,19 +150,19 @@ presentTag :: T.Text -> HablogAction ()
 presentTag tag = do
   cfg <- getCfg
   posts <- liftIO getAllPosts
-  html . HR.renderHtml . template cfg False tag "blog" $ postsListHtml $ filter (hasTag tag) posts
+  html . HR.renderHtml . template cfg Post.noPreview False tag "blog" $ postsListHtml $ filter (hasTag tag) posts
 
 presentAuthors :: HablogAction ()
 presentAuthors = do
   cfg <- getCfg
   authors <- liftIO getAuthorsList
-  html . HR.renderHtml $ template cfg False "Posts Authors" "blog" authors
+  html . HR.renderHtml $ template cfg Post.noPreview False "Posts Authors" "blog" authors
 
 presentAuthor :: T.Text -> HablogAction ()
 presentAuthor auth = do
   cfg <- getCfg
   posts <- liftIO getAllPosts
-  html . HR.renderHtml . template cfg False auth "blog" . postsListHtml $ filter (hasAuthor auth) posts
+  html . HR.renderHtml . template cfg Post.noPreview False auth "blog" . postsListHtml $ filter (hasAuthor auth) posts
 
 getPageFromFile :: T.Text -> IO (Maybe Page.Page)
 getPageFromFile title = do
