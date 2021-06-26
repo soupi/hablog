@@ -21,7 +21,7 @@ template cfg preview highlight title' pageRoute container = do
     title = T.concat [blogTitle cfg, " - ", title']
   H.docTypeHtml $ do
     H.head $ do
-      H.title (H.toHtml (T.concat [blogTitle cfg, " - ", title]))
+      H.title (H.toHtml title)
       H.meta ! A.charset "utf-8"
       H.meta ! A.content "width=650" ! A.name "viewport"
       addPreview (preview { Post.previewTitle = Just title })

@@ -67,7 +67,7 @@ router domain = do
 
   notFound $ do
     cfg <- getCfg
-    html $ HR.renderHtml $ errorPage cfg (blogTitle cfg `TL.append` " - 404: not found") "404 - Could not find the page you were looking for."
+    html $ HR.renderHtml $ errorPage cfg "404: not found" "404 - Could not find the page you were looking for."
 
   where
     hasdots [] = False

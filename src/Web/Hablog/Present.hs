@@ -128,7 +128,7 @@ showOrNotFound showP result = do
   cfg <- getCfg
   case result of
     (p:_) -> html $ HR.renderHtml $ showP cfg p
-    []    -> html $ HR.renderHtml $ errorPage cfg "Hablog - 404: not found" "Could not find the page you were looking for."
+    []    -> html $ HR.renderHtml $ errorPage cfg "404: not found" "Could not find the page you were looking for."
 
 presentTags :: HablogAction ()
 presentTags = do
