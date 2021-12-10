@@ -4,8 +4,6 @@
 
 module Main where
 
-import Control.Monad (void)
-import Control.Concurrent (forkIO)
 import Data.List (intercalate)
 import Data.Text.Lazy (pack, unpack)
 import Options.Applicative
@@ -13,45 +11,25 @@ import Web.Hablog
 
 main :: IO ()
 main = do
-  args <- execParser paramsParserInfo
-  let cfg = pCfg args
-  case pCmd args of
-    HTTP port ->
-      run cfg port
-    HTTPS tlsCfg ->
-      runTLS tlsCfg cfg
-    Both port tlsCfg -> do
-      void $ forkIO $ run cfg port
-      runTLS tlsCfg cfg
-
+  cfg <- execParser configParserInfo
+  run cfg
 
 --------------------
 -- Options Parser
 --------------------
 
-data Params = Params
-  { pCfg :: Config
-  , pCmd :: Command
-  }
-  deriving (Show, Read)
-
-data Command
-  = HTTP Int
-  | HTTPS TLSConfig
-  | Both Int TLSConfig
-  deriving (Show, Read)
-
-paramsParserInfo :: ParserInfo Params
-paramsParserInfo =
-  info (helper <*> (Params <$> config <*> cmd)) $
+configParserInfo :: ParserInfo Config
+configParserInfo =
+  info (helper <*> config) $
      fullDesc
-  <> header   "Hablog - A blogging System"
+  <> header "Hablog - A blogging System"
 
 config :: Parser Config
 config = Config
   <$> fmap pack ttl
   <*> fmap snd thm
   <*> fmap pack domain
+  <*> prt
   where
     ttl =
       strOption
@@ -93,19 +71,8 @@ readTheme themeStr =
         "'" ++ themeStr ++ "' is not a valid theme. Try one of: "
             ++ intercalate ", " (map fst themes)
 
-cmd :: Parser Command
-cmd =
-  subparser
-  ( command "http" (info (HTTP <$> httpConfig <**> helper)
-      ( progDesc "Run only in HTTP mode" ))
- <> command "https" (info (HTTPS <$> tlsConfig <**> helper)
-      ( progDesc "Run only in TLS mode" ))
- <> command "both" (info (Both <$> httpConfig <*> tlsConfig <**> helper)
-      ( progDesc "Run both in HTTP and TLS modes" ))
-  )
-
-httpConfig :: Parser Int
-httpConfig =
+prt :: Parser Int
+prt =
   option auto
   (long "port"
    <> short 'p'
@@ -114,12 +81,6 @@ httpConfig =
    <> showDefault
    <> value 80
   )
-
-tlsConfig :: Parser TLSConfig
-tlsConfig = TLSConfig
-  <$> option auto (long "tls-port" <> short 'P' <> metavar "PORT" <> help "Port for TLS" <> showDefault <> value 443)
-  <*> strOption (long "tls-key"  <> short 'k' <> metavar "KEY"  <> help "Key file for for TLS")
-  <*> strOption (long "tls-cert" <> short 'c' <> metavar "CERT" <> help "Cert file for for TLS")
 
 fromFile :: Parser FilePath
 fromFile =

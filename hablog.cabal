@@ -21,34 +21,28 @@ source-repository head
 
 library
   Build-depends:
-    base >=4.7 && <5
-   ,scotty
-   ,scotty-tls >= 0.4
-   ,warp-tls == 3.2.12
-   ,blaze-html
-   ,blaze-markup
-   ,text
-   ,mtl
-   ,transformers
-   ,bytestring
-   ,bifunctors
-   ,transformers
-   ,markdown
-   ,directory
-   ,filepath
-   ,mime-types
-   ,containers
-   ,rss
-   ,time
-   ,network-uri
+     base >=4.7 && <5
+   , bifunctors
+   , containers
+   , bytestring
+   , text
+   , directory
+   , filepath
+   , mtl
+   , time
+   , scotty
+   , blaze-html
+   , blaze-markup
+   , mime-types
+   , markdown
+   , feed
+   , network-uri
 
   exposed-modules:
     Web.Hablog
     Web.Hablog.Run
     Web.Hablog.Config
     Web.Hablog.Types
-
-  other-modules:
     Web.Hablog.Utils
     Web.Hablog.Html
     Web.Hablog.Post
@@ -79,10 +73,10 @@ Executable hablog
   main-is: Main.hs
 
   Build-depends:
-     base
-    ,text
-    ,optparse-applicative
-    ,hablog
+      base
+    , text
+    , optparse-applicative
+    , hablog
 
   default-language:
     Haskell2010
@@ -90,7 +84,8 @@ Executable hablog
   if impl(ghc >= 6.12.0)
     other-extensions:
       FlexibleInstances
-    -- ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -static -optl-static -optl-pthread -fPIC
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields
+    -- for static executable:
+    -- ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -static -optl-static -optl-pthread -fPIC
   else
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields

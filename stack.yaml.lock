@@ -3,31 +3,10 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: rss-3000.2.0.7@sha256:1afcc4ac78372abf96dbf16ef8254dab4483302336b298be6f3a3cc0a5738162,1750
-    pantry-tree:
-      size: 151
-      sha256: ab863735971970ee2fea54c50ce775742934067dcbb052642c6ca8d3aa2bafaf
-  original:
-    hackage: rss-3000.2.0.7
-- completed:
-    hackage: scotty-tls-0.4.1@sha256:3eea55183b06e48f3c8407131ebd79d70515a2bd1825d5334f76eeace95f8f69,1000
-    pantry-tree:
-      size: 368
-      sha256: 2bbffe0e99ff20397aa51bfc4f26be862228475d0c37c67e3c9d2cc66ecc291b
-  original:
-    hackage: scotty-tls-0.4.1
-- completed:
-    hackage: HaXml-1.25.5@sha256:32dc3f0fa7aa0c7f05d6c19a307280eb821083cf7a7136f76a4547c114fb8c6e,4435
-    pantry-tree:
-      size: 4076
-      sha256: 271bc04441acbc6ff02a7baf5f774ba13cdca56c5d0960089f8dffedc03ea121
-  original:
-    hackage: HaXml-1.25.5
+packages: []
 snapshots:
 - completed:
-    size: 532380
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/15.yaml
-    sha256: 3b5f2a699aa5ed3abbc30410062bf743926f0868ce3eeb5655370c6c6cc1a9f4
-  original: lts-16.15
+    size: 586296
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/18.yaml
+    sha256: 63539429076b7ebbab6daa7656cfb079393bf644971156dc349d7c0453694ac2
+  original: lts-18.18

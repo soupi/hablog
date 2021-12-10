@@ -1,38 +1,40 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Web.Hablog.Post where
+module Web.Hablog.Post
+  ( module Web.Hablog.Post
+  , Text
+  )
+  where
 
+import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Map as M
-import qualified Text.RSS as RSS
-import           Data.Time (fromGregorian, Day, UTCTime(..), secondsToDiffTime)
-import           Network.URI (parseURI)
-import qualified Text.Blaze.Html.Renderer.Text as HR
+import Data.Time (fromGregorian, Day)
 
 import Web.Hablog.Utils
 
 data Preview
   = Preview
-    { previewTitle :: Maybe T.Text
-    , previewSummary :: Maybe T.Text
-    , previewImage :: Maybe (FilePath, T.Text)
-    , previewAuthor :: Maybe T.Text
-    , previewSite :: Maybe T.Text
+    { previewTitle :: Maybe Text
+    , previewSummary :: Maybe Text
+    , previewImage :: Maybe (FilePath, Text)
+    , previewAuthor :: Maybe Text
+    , previewSite :: Maybe Text
     }
 
 data Post
   = Post
-  { date  :: (T.Text, T.Text, T.Text)
-  , route :: T.Text
-  , title :: T.Text
-  , authors :: [T.Text]
-  , tags    :: [T.Text]
+  { date  :: (Text, Text, Text)
+  , route :: Text
+  , title :: Text
+  , authors :: [Text]
+  , tags    :: [Text]
   , preview :: Preview
   , content :: H.Html
   }
 
-year, month, day :: Post -> T.Text
+year, month, day :: Post -> Text
 year  p = case date p of { (y, _, _) -> y; }
 month p = case date p of { (_, m, _) -> m; }
 day   p = case date p of { (_, _, d) -> d; }
@@ -43,7 +45,7 @@ toDay post =
     ([(y,[])], [(m,[])], [(d,[])]) -> pure (fromGregorian y m d)
     _ -> Nothing
 
-toPost :: T.Text -> Maybe Post
+toPost :: Text -> Maybe Post
 toPost fileContent =
   Post <$> ((,,) <$> yyyy <*> mm <*> dd)
        <*> M.lookup "route" header
@@ -63,7 +65,7 @@ toPost fileContent =
 noPreview :: Preview
 noPreview = Preview mempty mempty mempty mempty mempty
 
-mkPreview :: M.Map T.Text T.Text -> Preview
+mkPreview :: M.Map Text Text -> Preview
 mkPreview header =
   Preview
     (M.lookup "title" header)
@@ -75,23 +77,23 @@ mkPreview header =
     (M.lookup "authors" header)
     (M.lookup "twitter_handle" header)
 
-getPath :: Post -> T.Text
+getPath :: Post -> Text
 getPath post =
   T.concat ["post/", year post, "/", month post, "/", day post, "/", route post]
 
-getDate :: Post -> T.Text
+getDate :: Post -> Text
 getDate post =
   T.concat [day post, "/", month post, "/", year post]
 
-eqY, eqM, eqD :: T.Text -> Post -> Bool
+eqY, eqM, eqD :: Text -> Post -> Bool
 eqY y p = y == year  p
 eqM m p = m == month p
 eqD d p = d == day   p
 
-eqYM :: (T.Text, T.Text) -> Post -> Bool
+eqYM :: (Text, Text) -> Post -> Bool
 eqYM (y,m) p = eqY y p && eqM m p
 
-eqDate :: (T.Text, T.Text, T.Text) -> Post -> Bool
+eqDate :: (Text, Text, Text) -> Post -> Bool
 eqDate dt p = dt == date p
 
 instance Show Post where
@@ -109,23 +111,3 @@ instance Ord Post where
     | year p1 == year p2 && month p1 == month p2 && day p1 < day p2 = LT
     | year p1 == year p2 && month p1 == month p2 && day p1 == day p2 = EQ
     | otherwise = GT
-
-
-toRSS :: T.Text -> Post -> RSS.Item
-toRSS domain post =
-  [ RSS.Title (T.unpack $ title post)
-  ] ++ map (RSS.Author . T.unpack) (authors post)
-    ++ map (RSS.Category Nothing . T.unpack) (tags post)
-    ++ [ RSS.PubDate $ UTCTime d (secondsToDiffTime 0)
-       | Just d <- [toDay post]
-       ]
-    ++ [ RSS.Link r
-       | Just r <- (:[]) $ parseURI $
-           T.unpack (domain <> "/" <> getPath post)
-       ]
-    ++ [ RSS.Description
-       . T.unpack
-       $ HR.renderHtml (content post)
-       ]
-
-

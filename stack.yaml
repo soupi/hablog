@@ -1,17 +1,16 @@
-resolver: lts-16.15
+resolver: lts-18.18
 
 # docker:
 #   enable: true
-#   image: utdemir/ghc-musl:v16-ghc884
+#   image: utdemir/ghc-musl:v22-ghc8107
 
 packages:
 - '.'
 
-extra-deps:
-- rss-3000.2.0.7
-- scotty-tls-0.4.1
-- HaXml-1.25.5
+extra-deps: []
 
 flags: {}
 
 extra-package-dbs: []
+
+allower-newer: true

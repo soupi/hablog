@@ -18,14 +18,7 @@ data Config = Config
   { blogTitle  :: Text
   , blogTheme  :: Theme
   , blogDomain :: Text
-  }
-  deriving (Show, Read)
-
--- | Requires the needed values for runTLS
-data TLSConfig = TLSConfig
-  { blogTLSPort :: Int
-  , blogCert    :: FilePath
-  , blogKey     :: FilePath
+  , blogPort :: Int
   }
   deriving (Show, Read)
 
@@ -35,6 +28,7 @@ defaultConfig = Config
   { blogTitle = defaultTitle
   , blogTheme = snd defaultTheme
   , blogDomain = defaultDomain
+  , blogPort = defaultPort
   }
 
 -- | "Hablog"
@@ -48,10 +42,6 @@ defaultDomain = "localhost"
 defaultPort :: Int
 defaultPort = 80
 
--- | The default HTTPS port is 443
-defaultTLSPort :: Int
-defaultTLSPort = 443
-
 -- | The default is the dark theme
 defaultTheme :: (String, Theme)
 defaultTheme = ("dark", darkTheme)
@@ -62,9 +52,8 @@ darkTheme = Theme "/static/css/dark.css" "/static/highlight/styles/hybrid.css"
 lightTheme :: Theme
 lightTheme  = Theme "/static/css/light.css" "/static/highlight/styles/docco.css"
 
-
 themes :: [(String, Theme)]
 themes =
-  [("dark",  darkTheme)
-  ,("light", lightTheme)
+  [ ("dark",  darkTheme)
+  , ("light", lightTheme)
   ]

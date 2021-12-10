@@ -4,9 +4,8 @@
 
 module Web.Hablog.Run where
 
-import           Web.Scotty.Trans
-import           Web.Scotty.TLS (scottyTTLS)
-import           Control.Monad.Trans.Reader (runReaderT)
+import Web.Scotty.Trans
+import Control.Monad.Reader (runReaderT)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Text.Lazy as TL
@@ -23,16 +22,9 @@ import Web.Hablog.Html (errorPage)
 import Web.Hablog.Post (eqY, eqYM, eqDate)
 
 -- | Run Hablog on HTTP
-run :: Config -> Int -> IO ()
-run cfg port =
-  scottyT port (`runReaderT` cfg) (router $! domain)
-  where
-    domain = parseURI (TL.unpack $ blogDomain cfg)
-
--- | Run Hablog on HTTPS
-runTLS :: TLSConfig -> Config -> IO ()
-runTLS tlsCfg cfg =
-  scottyTTLS (blogTLSPort tlsCfg) (blogKey tlsCfg) (blogCert tlsCfg) (`runReaderT` cfg) (router $! domain)
+run :: Config -> IO ()
+run cfg =
+  scottyT (blogPort cfg) (`runReaderT` cfg) (router $! domain)
   where
     domain = parseURI (TL.unpack $ blogDomain cfg)
 
@@ -77,8 +69,8 @@ router domain = do
 
 route :: Maybe URI -> Hablog ()
 route domain = do
-  when (isJust domain)
-    $ get "/blog/rss" (presentRSS $ fromJust domain)
+--  when (isJust domain)
+--    $ get "/blog/rss" (presentRSS $ fromJust domain)
 
   get "/blog/post/:yyyy/:mm/:dd/:title" $ do
     (yyyy, mm, dd) <- getDate
@@ -152,6 +144,6 @@ route domain = do
 
   where
     getDate =  (,,)
-           <$> param "yyyy"
-           <*> param "mm"
-           <*> param "dd"
+      <$> param "yyyy"
+      <*> param "mm"
+      <*> param "dd"

@@ -1,32 +1,33 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Web.Hablog.Present where
+module Web.Hablog.Present
+  ( module Web.Hablog.Present
+  )
+  where
 
-import           Web.Scotty.Trans
-import           Control.Monad.IO.Class (liftIO)
-import           Data.Maybe (catMaybes)
-import           Data.Either (rights)
+import Web.Scotty.Trans
+import Control.Monad.IO.Class (liftIO)
+import Data.Maybe (catMaybes)
+import Data.Either (rights)
 import qualified Data.List as L
-import qualified Data.Text.Lazy as T
-import qualified Data.Text.Lazy.Encoding as T
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Encoding as TL
 import qualified Data.ByteString.Lazy as BSL
-import qualified Data.ByteString.Lazy.Char8 as BSLC
 
 import qualified Text.Blaze.Html.Renderer.Text as HR
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
-import           Text.Blaze.Html5 ((!))
+import Text.Blaze.Html5 ((!))
 
 import qualified System.Directory as DIR (getDirectoryContents)
-import           System.IO.Error (catchIOError)
-import qualified Text.RSS as RSS
+import System.IO.Error (catchIOError)
 
 import Web.Hablog.Html
 import Web.Hablog.Types
 import Web.Hablog.Config
 import qualified Web.Hablog.Post as Post
-import qualified Web.Hablog.Page  as Page
-import Network.URI (URI)
+import qualified Web.Hablog.Page as Page
 
 
 presentHome :: HablogAction ()
@@ -67,6 +68,7 @@ presentBlog = do
           H.h1 "Tags"
           tgs
 
+{-
 presentRSS :: URI -> HablogAction ()
 presentRSS domain = do
   cfg <- getCfg
@@ -77,9 +79,10 @@ presentRSS domain = do
     . BSLC.pack
     . RSS.showXML
     . RSS.rssToXML
-    . RSS.RSS (T.unpack $ blogTitle cfg) domain "" []
+    . RSS.RSS (TL.unpack $ blogTitle cfg) domain "" []
     . map (Post.toRSS $ blogDomain cfg)
     $ allPosts
+-}
 
 showPostsWhere :: (Post.Post -> Bool) -> HablogAction ()
 showPostsWhere test = do
@@ -88,10 +91,10 @@ showPostsWhere test = do
   html $ HR.renderHtml $ template cfg Post.noPreview False "Posts" "blog" $
     postsListHtml $ filter test allPosts
 
-presentPage :: T.Text -> HablogAction ()
+presentPage :: Text -> HablogAction ()
 presentPage route = do
   pages <- liftIO getAllPages
-  showOrNotFound (presentPage' pages) . filter (((==) $ T.unpack $ T.toLower route) . Page.getPageURL) $ pages
+  showOrNotFound (presentPage' pages) . filter (((==) $ TL.unpack $ TL.toLower route) . Page.getPageURL) $ pages
 
 presentPage' :: [Page.Page] -> Config -> Page.Page -> H.Html
 presentPage' pages cfg page = do
@@ -111,17 +114,17 @@ getAllPages = getAllFromDir Page.toPage "_pages"
 getAllPosts :: IO [Post.Post]
 getAllPosts = getAllFromDir Post.toPost "_posts"
 
-getAllFromDir :: Ord a => (T.Text -> Maybe a) -> FilePath -> IO [a]
+getAllFromDir :: Ord a => (Text -> Maybe a) -> FilePath -> IO [a]
 getAllFromDir parse dir = do
   posts <- fmap (L.delete ".." . L.delete ".") (DIR.getDirectoryContents dir `catchIOError` (\_ -> pure []))
-  contents <- rights <$> mapM ((\x -> (T.decodeUtf8' <$> BSL.readFile x) `catchIOError` const (pure $ Left undefined)) . ((dir++"/")++)) posts
+  contents <- rights <$> mapM ((\x -> (TL.decodeUtf8' <$> BSL.readFile x) `catchIOError` const (pure $ Left undefined)) . ((dir++"/")++)) posts
   pure . L.sortBy (flip compare) . catMaybes $ fmap parse (reverse contents)
 
-presentPost :: T.Text -> HablogAction ()
+presentPost :: Text -> HablogAction ()
 presentPost title = do
   posts <- liftIO getAllPosts
   showOrNotFound postPage $ filter ((== title) . path) posts
-  where path p = T.intercalate "/" ([Post.year, Post.month, Post.day, Post.route] <*> [p])
+  where path p = TL.intercalate "/" ([Post.year, Post.month, Post.day, Post.route] <*> [p])
 
 showOrNotFound :: (Config -> a -> H.Html) -> [a] -> HablogAction ()
 showOrNotFound showP result = do
@@ -146,7 +149,7 @@ getPageList = H.ul . pagesList
 getAuthorsList :: IO H.Html
 getAuthorsList = pure . authorsList . getAllAuthors =<< getAllPosts
 
-presentTag :: T.Text -> HablogAction ()
+presentTag :: Text -> HablogAction ()
 presentTag tag = do
   cfg <- getCfg
   posts <- liftIO getAllPosts
@@ -158,43 +161,42 @@ presentAuthors = do
   authors <- liftIO getAuthorsList
   html . HR.renderHtml $ template cfg Post.noPreview False "Posts Authors" "blog" authors
 
-presentAuthor :: T.Text -> HablogAction ()
+presentAuthor :: Text -> HablogAction ()
 presentAuthor auth = do
   cfg <- getCfg
   posts <- liftIO getAllPosts
   html . HR.renderHtml . template cfg Post.noPreview False auth "blog" . postsListHtml $ filter (hasAuthor auth) posts
 
-getPageFromFile :: T.Text -> IO (Maybe Page.Page)
+getPageFromFile :: Text -> IO (Maybe Page.Page)
 getPageFromFile title = do
-  let path = T.unpack $ mconcat ["_pages/", title]
+  let path = TL.unpack $ mconcat ["_pages/", title]
   getFromFile Page.toPage path
 
-getPostFromFile :: T.Text -> T.Text -> IO (Maybe Post.Post)
+getPostFromFile :: Text -> Text -> IO (Maybe Post.Post)
 getPostFromFile date title = do
-  let postPath = T.unpack $ mconcat ["_posts/", date, "-", title, ".md"]
+  let postPath = TL.unpack $ mconcat ["_posts/", date, "-", title, ".md"]
   getFromFile Post.toPost postPath
 
-getFromFile :: (T.Text -> Maybe a) -> String -> IO (Maybe a)
+getFromFile :: (Text -> Maybe a) -> String -> IO (Maybe a)
 getFromFile constructor path = do
-  fileContent <- (T.decodeUtf8' <$> BSL.readFile path) `catchIOError` const (pure $ Left undefined)
+  fileContent <- (TL.decodeUtf8' <$> BSL.readFile path) `catchIOError` const (pure $ Left undefined)
   let cont = case fileContent of
               Left _  -> Nothing
               Right x -> Just x
   let content = constructor =<< cont
   pure content
 
-getAllTags :: [Post.Post] -> [T.Text]
+getAllTags :: [Post.Post] -> [Text]
 getAllTags = getAll Post.tags
 
-hasTag :: T.Text -> Post.Post -> Bool
+hasTag :: Text -> Post.Post -> Bool
 hasTag tag = ([]/=) . filter (==tag) . Post.tags
 
-getAllAuthors :: [Post.Post] -> [T.Text]
+getAllAuthors :: [Post.Post] -> [Text]
 getAllAuthors = getAll Post.authors
 
-getAll :: (Post.Post -> [T.Text]) -> [Post.Post] -> [T.Text]
-getAll f  = L.sort . map (T.unwords . T.words . head) . L.group . L.sort . concatMap f
+getAll :: (Post.Post -> [Text]) -> [Post.Post] -> [Text]
+getAll f  = L.sort . map (TL.unwords . TL.words . head) . L.group . L.sort . concatMap f
 
-hasAuthor :: T.Text -> Post.Post -> Bool
+hasAuthor :: Text -> Post.Post -> Bool
 hasAuthor auth myPost = auth `elem` Post.authors myPost
-
