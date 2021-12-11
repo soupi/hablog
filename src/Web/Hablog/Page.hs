@@ -12,29 +12,30 @@ import Web.Hablog.Post
 
 data Page
     = Page
-    { getPageURL     :: FilePath
-    , getPageName    :: T.Text
-    , getPagePreview :: Preview
-    , getPageContent :: H.Html
+    { pageURL     :: FilePath
+    , pageName    :: T.Text
+    , pagePreview :: Preview
+    , pageModificationTime :: UTCTime
+    , pageContent :: H.Html
     }
 
-toPage :: T.Text -> Maybe Page
-toPage fileContent =
+toPage :: UTCTime -> T.Text -> Maybe Page
+toPage modtime fileContent =
   Page <$> fmap T.unpack (M.lookup "route" header)
        <*> M.lookup "title" header
        <*> pure (mkPreview header)
+       <*> pure modtime
        <*> pure (createBody content')
     where (header, content') = (getHeader &&& getContent) fileContent
 
 
 instance Show Page where
-  show = getPageURL
+  show = pageURL
 
 instance Eq Page where
-  (==) p1 p2 = getPageURL p1 == getPageURL p2
+  (==) p1 p2 = pageURL p1 == pageURL p2
 
 instance Ord Page where
   compare p1 p2
-    | getPageName p1 < getPageName p2 = LT
+    | pageName p1 < pageName p2 = LT
     | otherwise = GT
-

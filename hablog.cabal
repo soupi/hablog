@@ -36,11 +36,14 @@ library
    , mime-types
    , markdown
    , feed
+   , xml-conduit
    , network-uri
+   , uri-encode
 
   exposed-modules:
     Web.Hablog
     Web.Hablog.Run
+    Web.Hablog.Router
     Web.Hablog.Config
     Web.Hablog.Types
     Web.Hablog.Utils
@@ -48,6 +51,7 @@ library
     Web.Hablog.Post
     Web.Hablog.Page
     Web.Hablog.Present
+    Web.Hablog.Feed
 
   exposed:
     True

@@ -1,16 +1,20 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# language ViewPatterns #-}
+{-# language OverloadedStrings #-}
 
 module Web.Hablog.Post
   ( module Web.Hablog.Post
   , Text
+  , UTCTime
   )
   where
 
+import Text.Read (readMaybe)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Map as M
-import Data.Time (fromGregorian, Day)
+import Data.Time (fromGregorian, toGregorian, Day, UTCTime)
+import Data.Time.Format.ISO8601 (iso8601Show)
 
 import Web.Hablog.Utils
 
@@ -25,19 +29,20 @@ data Preview
 
 data Post
   = Post
-  { date  :: (Text, Text, Text)
-  , route :: Text
-  , title :: Text
-  , authors :: [Text]
-  , tags    :: [Text]
-  , preview :: Preview
-  , content :: H.Html
-  }
+    { postDate  :: Day
+    , postRoute :: Text
+    , postTitle :: Text
+    , postAuthors :: [Text]
+    , postTags    :: [Text]
+    , postPreview :: Preview
+    , postModificationTime :: UTCTime
+    , postContent :: H.Html
+    }
 
 year, month, day :: Post -> Text
-year  p = case date p of { (y, _, _) -> y; }
-month p = case date p of { (_, m, _) -> m; }
-day   p = case date p of { (_, _, d) -> d; }
+year  p = T.pack $ take 4 $ iso8601Show $ postDate p
+month p = T.pack $ take 2 $ drop 5 $ iso8601Show $ postDate p
+day   p = T.pack $ take 2 $ drop 8 $ iso8601Show $ postDate p
 
 toDay :: Post -> Maybe Day
 toDay post =
@@ -45,22 +50,21 @@ toDay post =
     ([(y,[])], [(m,[])], [(d,[])]) -> pure (fromGregorian y m d)
     _ -> Nothing
 
-toPost :: Text -> Maybe Post
-toPost fileContent =
-  Post <$> ((,,) <$> yyyy <*> mm <*> dd)
-       <*> M.lookup "route" header
-       <*> M.lookup "title" header
-       <*> (map (T.unwords . T.words) . T.split (==',') <$> M.lookup "authors" header)
-       <*> (map (T.toLower . T.unwords . T.words) . T.split (==',') <$> M.lookup "tags" header)
-       <*> pure preview'
-       <*> pure (createBody $ getContent fileContent)
-    where
-        header = getHeader fileContent
-        dt     = T.split (=='-') <$> M.lookup "date" header
-        yyyy   = dt >>= (`at` 0)
-        mm     = dt >>= (`at` 1)
-        dd     = dt >>= (`at` 2)
-        preview' = mkPreview header
+toPost :: UTCTime -> Text -> Maybe Post
+toPost modtime fileContent =
+  Post
+    <$> dt
+    <*> M.lookup "route" header
+    <*> M.lookup "title" header
+    <*> (map (T.unwords . T.words) . T.split (==',') <$> M.lookup "authors" header)
+    <*> (map (T.toLower . T.unwords . T.words) . T.split (==',') <$> M.lookup "tags" header)
+    <*> pure preview'
+    <*> pure modtime
+    <*> pure (createBody $ getContent fileContent)
+  where
+    dt = readMaybe . T.unpack =<< M.lookup "date" header
+    header = getHeader fileContent
+    preview' = mkPreview header
 
 noPreview :: Preview
 noPreview = Preview mempty mempty mempty mempty mempty
@@ -79,7 +83,7 @@ mkPreview header =
 
 getPath :: Post -> Text
 getPath post =
-  T.concat ["post/", year post, "/", month post, "/", day post, "/", route post]
+  T.concat ["post/", year post, "/", month post, "/", day post, "/", postRoute post]
 
 getDate :: Post -> Text
 getDate post =
@@ -94,14 +98,17 @@ eqYM :: (Text, Text) -> Post -> Bool
 eqYM (y,m) p = eqY y p && eqM m p
 
 eqDate :: (Text, Text, Text) -> Post -> Bool
-eqDate dt p = dt == date p
+eqDate dt p = dt == dateToTexts (postDate p)
+
+dateToTexts :: Day -> (Text, Text, Text)
+dateToTexts (toGregorian -> (y, m, d)) = (T.pack $ show y, T.pack $ show m, T.pack $ show d)
 
 instance Show Post where
   show post =
-    T.unpack $ T.concat ["post/", year post, "/", month post, "/", day post, "/", route post]
+    T.unpack $ T.concat ["post/", year post, "/", month post, "/", day post, "/", postRoute post]
 
 instance Eq Post where
-  (==) p1 p2 = route p1 == route p2
+  (==) p1 p2 = postRoute p1 == postRoute p2
 
 
 instance Ord Post where

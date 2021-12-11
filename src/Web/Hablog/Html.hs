@@ -102,35 +102,35 @@ postsListItem :: Post.Post -> H.Html
 postsListItem post = H.li $ do
   H.span ! A.class_ "postDate" $ H.toHtml $ Post.getDate post
   H.span ! A.class_ "seperator" $ " - "
-  H.a ! A.href (fromString $ T.unpack ("/blog/" `T.append` Post.getPath post)) $ H.toHtml $ Post.title post
+  H.a ! A.href (fromString $ T.unpack ("/blog/" `T.append` Post.getPath post)) $ H.toHtml $ Post.postTitle post
 
 postPage :: Config -> Post.Post -> H.Html
-postPage cfg post = template cfg (Post.preview post) True (Post.title post) "blog" $
+postPage cfg post = template cfg (Post.postPreview post) True (Post.postTitle post) "blog" $
     H.article ! A.class_ "post" $ do
       H.div ! A.class_ "postTitle" $ do
-        H.a ! A.href (fromString $ T.unpack ("/blog/" `T.append` Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.title post)
+        H.a ! A.href (fromString $ T.unpack ("/blog/" `T.append` Post.getPath post)) $ H.h2 ! A.class_ "postHeader" $ H.toHtml (Post.postTitle post)
         H.span ! A.class_ "postSubTitle" $ do
-          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList $ Post.authors post
+          H.span ! A.class_ "postAuthor" $ H.toHtml $ authorsList $ Post.postAuthors post
           H.span ! A.class_ "seperator" $ " - "
           H.span ! A.class_ "postDate" $ H.toHtml $ Post.getDate post
           H.span ! A.class_ "seperator" $ " - "
-          H.span ! A.class_ "postTags" $ tagsList (Post.tags post)
-      H.div ! A.class_ "postContent" $ Post.content post
+          H.span ! A.class_ "postTags" $ tagsList (Post.postTags post)
+      H.div ! A.class_ "postContent" $ Post.postContent post
 
 pagePage :: Config -> Page.Page -> H.Html
 pagePage cfg page =
   template
     cfg
-    (Page.getPagePreview page)
+    (Page.pagePreview page)
     True
-    (Page.getPageName page)
-    (Page.getPageURL page)
+    (Page.pageName page)
+    (Page.pageURL page)
     (pageContent page)
 
 pageContent :: Page.Page -> H.Html
 pageContent page = do
   H.article ! A.class_ "post" $ do
-    H.div ! A.class_ "postContent" $ Page.getPageContent page
+    H.div ! A.class_ "postContent" $ Page.pageContent page
 
 pagesList :: [Page.Page] -> H.Html
 pagesList = mconcat . fmap pagesListItem . sort
@@ -138,8 +138,8 @@ pagesList = mconcat . fmap pagesListItem . sort
 pagesListItem :: Page.Page -> H.Html
 pagesListItem page =
   H.li
-    $ H.a ! A.href (fromString ("/" ++ Page.getPageURL page))
-    $ H.toHtml (Page.getPageName page)
+    $ H.a ! A.href (fromString ("/" ++ Page.pageURL page))
+    $ H.toHtml (Page.pageName page)
 
 tagsList :: [T.Text] -> H.Html
 tagsList = H.ul . mconcat . fmap tagsListItem . sort
@@ -152,6 +152,3 @@ authorsList = H.ul . mconcat . fmap authorsListItem . sort
 
 authorsListItem :: T.Text -> H.Html
 authorsListItem author = H.li $ H.a ! A.href (fromString $ T.unpack ("/blog/authors/" `T.append` author)) $ H.toHtml author
-
-
-
