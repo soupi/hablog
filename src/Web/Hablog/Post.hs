@@ -13,7 +13,7 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as T
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Map as M
-import Data.Time (fromGregorian, toGregorian, Day, UTCTime)
+import Data.Time (fromGregorian, Day, UTCTime)
 import Data.Time.Format.ISO8601 (iso8601Show)
 
 import Web.Hablog.Utils
@@ -98,10 +98,8 @@ eqYM :: (Text, Text) -> Post -> Bool
 eqYM (y,m) p = eqY y p && eqM m p
 
 eqDate :: (Text, Text, Text) -> Post -> Bool
-eqDate dt p = dt == dateToTexts (postDate p)
-
-dateToTexts :: Day -> (Text, Text, Text)
-dateToTexts (toGregorian -> (y, m, d)) = (T.pack $ show y, T.pack $ show m, T.pack $ show d)
+eqDate (y,m,d) p =
+  eqY y p && eqM m p && eqD d p
 
 instance Show Post where
   show post =
