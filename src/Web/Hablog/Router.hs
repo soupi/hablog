@@ -63,8 +63,8 @@ blogRoute domain = do
   when (isJust domain)
     $ get "/blog/atom.xml" presentAtom
 
---  when (isJust domain)
---    $ get "/blog/rss" (presentRSS $ fromJust domain)
+  when (isJust domain)
+    $ get "/blog/rss" presentRSS
 
   get "/blog/post/:yyyy/:mm/:dd/:title" $ do
     (yyyy, mm, dd) <- getDate

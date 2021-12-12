@@ -70,26 +70,23 @@ presentBlog = do
           H.h1 "Tags"
           tgs
 
-{-
-presentRSS :: URI -> HablogAction ()
-presentRSS domain = do
+presentRSS :: HablogAction ()
+presentRSS = do
   cfg <- getCfg
   allPosts <- liftIO getAllPosts
   let mime = "application/rss+xml"
   setHeader "content-type" mime
   raw
-    . BSLC.pack
-    . RSS.showXML
-    . RSS.rssToXML
-    . RSS.RSS (TL.unpack $ blogTitle cfg) domain "" []
-    . map (Post.toRSS $ blogDomain cfg)
+    . TL.encodeUtf8
+    . renderRSSFeed
+    . rssFeed cfg
     $ allPosts
--}
+
 presentAtom :: HablogAction ()
 presentAtom = do
   cfg <- getCfg
   allPosts <- liftIO getAllPosts
-  let mime = "application/rss+xml"
+  let mime = "application/atom+xml"
   setHeader "content-type" mime
   raw
     . TL.encodeUtf8

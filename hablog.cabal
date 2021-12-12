@@ -36,7 +36,6 @@ library
    , mime-types
    , markdown
    , feed
-   , xml-conduit
    , network-uri
    , uri-encode
 
