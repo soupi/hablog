@@ -56,6 +56,9 @@ getContent = T.unlines . dropWhile (T.isPrefixOf headerBreaker) . dropWhile (not
 
 createBody :: T.Text -> H.Html
 createBody = MD.markdown MD.def
+  { MD.msAddHeadingId = True
+  , MD.msXssProtect = False
+  }
 
 
 
