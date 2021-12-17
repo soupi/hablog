@@ -12,5 +12,3 @@ extra-deps: []
 flags: {}
 
 extra-package-dbs: []
-
-allower-newer: true
