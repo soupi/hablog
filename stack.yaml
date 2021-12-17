@@ -9,6 +9,15 @@ packages:
 
 extra-deps: []
 
-flags: {}
+flags:
+  scientific:
+    integer-simple: true
+  cryptonite:
+    integer-gmp: false
+  hashable:
+    integer-gmp: false
+  integer-logarithms:
+    integer-gmp: false
+
 
 extra-package-dbs: []
