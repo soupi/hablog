@@ -1,23 +1,26 @@
 resolver: lts-18.18
 
-# docker:
-#   enable: true
-#   image: utdemir/ghc-musl:v22-ghc8107
-
 packages:
 - '.'
 
 extra-deps: []
 
-flags:
-  scientific:
-    integer-simple: true
-  cryptonite:
-    integer-gmp: false
-  hashable:
-    integer-gmp: false
-  integer-logarithms:
-    integer-gmp: false
+# Remove the following comments for static linking
+# See the comment in hablog.cabal as well
+
+# docker:
+#   enable: true
+#   image: utdemir/ghc-musl:v22-ghc8107
+
+# flags:
+#   scientific:
+#     integer-simple: true
+#   cryptonite:
+#     integer-gmp: false
+#   hashable:
+#     integer-gmp: false
+#   integer-logarithms:
+#     integer-gmp: false
 
 
 extra-package-dbs: []
