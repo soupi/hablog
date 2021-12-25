@@ -35,6 +35,7 @@ data Post
     , postAuthors :: [Text]
     , postTags    :: [Text]
     , postPreview :: Preview
+    , postIsPreview :: Bool
     , postModificationTime :: UTCTime
     , postContent :: H.Html
     }
@@ -59,12 +60,20 @@ toPost modtime fileContent =
     <*> (map (T.unwords . T.words) . T.split (==',') <$> M.lookup "authors" header)
     <*> (map (T.toLower . T.unwords . T.words) . T.split (==',') <$> M.lookup "tags" header)
     <*> pure preview'
+    <*> pure isPreview
     <*> pure modtime
     <*> pure (createBody $ getContent fileContent)
   where
     dt = readMaybe . T.unpack =<< M.lookup "date" header
     header = getHeader fileContent
     preview' = mkPreview header
+    isPreview =
+      case cleanText <$> M.lookup "preview" header of
+        Just "true" -> True
+        _ -> False
+
+cleanText :: Text -> String
+cleanText = T.unpack . T.toLower . T.unwords . T.words
 
 noPreview :: Preview
 noPreview = Preview mempty mempty mempty mempty mempty

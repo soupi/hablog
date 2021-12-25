@@ -122,7 +122,10 @@ getAllPages :: IO [Page.Page]
 getAllPages = getAllFromDir Page.toPage "_pages"
 
 getAllPosts :: IO [Post.Post]
-getAllPosts = getAllFromDir Post.toPost "_posts"
+getAllPosts = filter (not . Post.postIsPreview) <$> getAllFromDir Post.toPost "_posts"
+
+getAllPostsIncludingPreviews :: IO [Post.Post]
+getAllPostsIncludingPreviews = getAllFromDir Post.toPost "_posts"
 
 getAllFromDir :: Ord a => (Post.UTCTime -> Text -> Maybe a) -> FilePath -> IO [a]
 getAllFromDir parse dir = do
@@ -146,7 +149,7 @@ readFileWithModTime path =
 
 presentPost :: Text -> HablogAction ()
 presentPost title = do
-  posts <- liftIO getAllPosts
+  posts <- liftIO getAllPostsIncludingPreviews
   showOrNotFound postPage $ filter ((== title) . path) posts
   where path p = TL.intercalate "/" ([Post.year, Post.month, Post.day, Post.postRoute] <*> [p])
 
